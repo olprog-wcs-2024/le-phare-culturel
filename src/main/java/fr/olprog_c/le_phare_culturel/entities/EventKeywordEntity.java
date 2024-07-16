@@ -3,6 +3,7 @@ package fr.olprog_c.le_phare_culturel.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -13,6 +14,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class EventKeywordEntity extends BaseCommonEntity {
 
   @Column(nullable = false)

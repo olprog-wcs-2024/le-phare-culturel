@@ -1,9 +1,0 @@
-// event_group DTO
-{
-  "group":  {
-    "id": 1,
-    "name": "group1",
-    "count": 5,
-    "users": []
-  }
-}

@@ -1,0 +1,49 @@
+services:
+  mysqlDB:
+    image: mysql:latest
+    container_name: mysqlDB-lpc
+    environment:
+      MYSQL_ROOT_PASSWORD: ${SQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${SQL_DB}
+      MYSQL_USER: ${SQL_USER}
+      MYSQL_PASSWORD: ${SQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    env_file:
+      - .env
+    networks:
+      - backend_network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  backend:
+    build:
+      context: .
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqlDB:3306/${SQL_DB}?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${SQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${SQL_PASSWORD}
+      SHOW_SQL: ${SHOW_SQL}
+      FORMAT_SHOW_SQL: ${FORMAT_SHOW_SQL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+    depends_on:
+      mysqlDB:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    networks:
+      - backend_network
+
+volumes:
+  mysql_data:
+
+networks:
+  backend_network:

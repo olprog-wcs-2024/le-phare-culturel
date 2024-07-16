@@ -1,9 +1,0 @@
-/* DTO USER */
-{
-  "user": {
-    "name": "utilisateur",
-    "image": "/image_profil.png",
-    "profil_uri" : "/profile/12345",
-    "profil_info": []
-  }
-}
