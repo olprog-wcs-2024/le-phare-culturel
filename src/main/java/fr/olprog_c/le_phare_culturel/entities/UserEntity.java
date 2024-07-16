@@ -35,23 +35,23 @@ public class UserEntity extends BaseCommonEntity implements UserDetails {
   // @Column(name = "role", nullable = false)
   private UserRoleEnum userRole;
 
-  @Column(name = "profile_nickname", unique = true, nullable = false, length = 32)
+  @Column(name = "profile_nickname", nullable = false, length = 32)
   @ColumnDefault("\"New User nickname\"")
   private String profileNickname;
 
-  @Column(name = "profile_description", unique = true, nullable = false, length = 320)
+  @Column(name = "profile_description", nullable = false, length = 320)
   @ColumnDefault("\"New User profile description\"")
   private String profileDescription;
 
-  @Column(name = "first_name", unique = false, nullable = false, length = 55)
+  @Column(name = "first_name", nullable = false, length = 55)
   @ColumnDefault("\"New User firstname\"")
   private String firstName;
 
-  @Column(name = "last_name", unique = false, nullable = false, length = 55)
+  @Column(name = "last_name", nullable = false, length = 55)
   @ColumnDefault("\"New User lastname\"")
   private String lastName;
 
-  @Column(unique = true, nullable = false, length = 245)
+  @Column(nullable = false, length = 245)
   // @ColumnDefault("SHA2(\"new_password\", 512)")
   private String password;
   // @CreationTimestamp
