@@ -42,6 +42,7 @@ public class SecurityConfiguration {
                       RouteDefinition.LOGIN_URL,
                       RouteDefinition.REGISTER_URL,
                       RouteDefinition.LOGOUT_URL,
+                      "/confirm",
                       RouteDefinition.LOGIN_RESET_PASSWORD_URL)
                   .permitAll()
                   .anyRequest().authenticated();

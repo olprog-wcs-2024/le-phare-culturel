@@ -42,7 +42,7 @@ public class AuthController {
       if (authenticate.isAuthenticated()) {
         UserEntity user = (UserEntity) authenticate.getPrincipal();
         Map<String, String> token = jwtService.generateEncodedTokenForEmail(user.getEmail());
-        ResponseCookie cookie = ResponseCookie.from("token", token.get("bearer"))
+        ResponseCookie cookie = ResponseCookie.from("token", token.get(JWTService.COOKIE_TOKEN_NAME))
             .httpOnly(true)
             .secure(true)
             .path("/")

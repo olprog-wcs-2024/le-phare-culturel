@@ -55,11 +55,6 @@ public class JWTService {
   }
 
   /* ****** ****** ****** ****** */
-  public Map<String, String> generateEncodedTokenForUsername(String username) {
-    return generateEncodedToken(userDetailsService.loadUserByUsername(username));
-  }
-
-  /* ****** ****** ****** ****** */
   public Map<String, String> generateEncodedToken(UserDetails argUserDetails) {
     final Long jwtDateNow = System.currentTimeMillis();
     final Date jwtExpirationDate = new Date(jwtDateNow + tokenExpiration);

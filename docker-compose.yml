@@ -41,6 +41,16 @@ services:
       - .env
     networks:
       - backend_network
+    develop:
+      watch:
+        - path: .
+          target: /workspace
+          action: sync
+          ignore:
+            - target/
+            - .mvn/
+        - path: pom.xml
+          action: rebuild
 
 volumes:
   mysql_data:
