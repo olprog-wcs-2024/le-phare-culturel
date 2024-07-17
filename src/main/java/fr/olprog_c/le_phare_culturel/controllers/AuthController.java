@@ -2,6 +2,8 @@ package fr.olprog_c.le_phare_culturel.controllers;
 
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,11 +13,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpServerErrorException;
 
 import fr.olprog_c.le_phare_culturel.configuration.JWTService;
 import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
 import fr.olprog_c.le_phare_culturel.dtos.AuthLoginPostDTO;
 import fr.olprog_c.le_phare_culturel.dtos.AuthRegisterPostDTO;
+import fr.olprog_c.le_phare_culturel.dtos.mapper.AuthDTOMapper;
 import fr.olprog_c.le_phare_culturel.entities.UserEntity;
 import fr.olprog_c.le_phare_culturel.services.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -50,7 +54,7 @@ public class AuthController {
             .build();
 
         response.addHeader("set-cookie", cookie.toString());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(AuthDTOMapper.responseDTO(user));
       }
 
     } catch (BadCredentialsException b) {
@@ -61,7 +65,11 @@ public class AuthController {
 
   @PostMapping(RouteDefinition.REGISTER_URL)
   public void register(@Valid @RequestBody AuthRegisterPostDTO dto) {
-    this.authService.register(dto);
+    if (dto.confirmPassword().equals(dto.password())) {
+      this.authService.register(dto);
+    } else {
+      throw new HttpServerErrorException(HttpStatus.PRECONDITION_REQUIRED, "Les mots de passes ne sont pas identiques");
+    }
   }
 
 }

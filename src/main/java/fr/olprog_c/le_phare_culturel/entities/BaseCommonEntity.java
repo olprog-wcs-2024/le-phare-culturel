@@ -31,6 +31,5 @@ public class BaseCommonEntity {
   @UpdateTimestamp
   protected LocalDateTime updatedDate;
 
-  @CreationTimestamp
   protected LocalDateTime deletedDate;
 }

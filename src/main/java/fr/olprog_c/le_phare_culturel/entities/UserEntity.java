@@ -35,7 +35,7 @@ public class UserEntity extends BaseCommonEntity implements UserDetails {
   // @Column(name = "role", nullable = false)
   private UserRoleEnum userRole;
 
-  @Column(name = "profile_nickname", nullable = false, length = 32)
+  @Column(name = "profile_nickname", unique = true, nullable = false, length = 32)
   @ColumnDefault("\"New User nickname\"")
   private String profileNickname;
 

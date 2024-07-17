@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import fr.olprog_c.le_phare_culturel.dtos.AuthLoginPostDTO;
+import fr.olprog_c.le_phare_culturel.dtos.AuthLoginPostResponseDTO;
 import fr.olprog_c.le_phare_culturel.dtos.AuthRegisterPostDTO;
 import fr.olprog_c.le_phare_culturel.entities.UserEntity;
 import fr.olprog_c.le_phare_culturel.enums.UserRoleEnum;
@@ -29,5 +30,10 @@ public class AuthDTOMapper {
     user.setProfileDescription(dto.profileDescription());
     user.setPassword(this.passwordEncoder.encode(dto.password()));
     return user;
+  }
+
+  public static AuthLoginPostResponseDTO responseDTO(UserEntity user) {
+    return new AuthLoginPostResponseDTO(user.getEmail(), user.getProfileNickname(), user.getProfileDescription(),
+        user.getAvatar(), user.getFirstName(), user.getLastName());
   }
 }

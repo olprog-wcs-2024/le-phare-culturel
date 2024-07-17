@@ -1,17 +1,19 @@
 package fr.olprog_c.le_phare_culturel.services;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 import fr.olprog_c.le_phare_culturel.dtos.AuthRegisterPostDTO;
 import fr.olprog_c.le_phare_culturel.dtos.mapper.AuthDTOMapper;
 import fr.olprog_c.le_phare_culturel.entities.ConfirmationTokenEntity;
 import fr.olprog_c.le_phare_culturel.entities.UserEntity;
-import fr.olprog_c.le_phare_culturel.exceptions.CustomException;
 import fr.olprog_c.le_phare_culturel.repositories.UserRepository;
+import jakarta.mail.MessagingException;
 
 @Service
 public class AuthService {
@@ -32,19 +34,29 @@ public class AuthService {
     this.emailService = emailService;
   }
 
-  public void register(AuthRegisterPostDTO authRegisterPostDTO) throws CustomException {
+  public void register(AuthRegisterPostDTO authRegisterPostDTO) throws HttpServerErrorException {
     try {
       UserEntity user = authDTOMapper.registerDtoToEntity(authRegisterPostDTO);
+
+      if (this.userRepository.existsByEmail(user.getEmail())) {
+        throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "Email déjà présent.");
+      }
+
       this.userRepository.save(user);
 
       ConfirmationTokenEntity token = new ConfirmationTokenEntity(user);
       confirmationTokenService.saveConfirmationToken(token);
 
       String link = appUrl + "/confirm?token=" + token.getToken();
-      emailService.sendSimpleMessage(user.getEmail(), "Confirm your email", link);
+      String htmlBody = buildEmail(user.getProfileNickname(), link);
+      try {
+        emailService.sendHtmlMessage(user.getEmail(), "Confirm your email", htmlBody);
+      } catch (MessagingException e) {
+        throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
+      }
 
     } catch (Exception e) {
-      throw new CustomException(HttpStatus.BAD_REQUEST, e.getMessage());
+      throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
   }
 
@@ -56,6 +68,35 @@ public class AuthService {
       userRepository.save(user);
       confirmationTokenService.deleteToken(t.getId());
     });
+  }
+
+  private String buildEmail(String name, String link) {
+    return """
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <style>
+          body { font-family: Arial, sans-serif; }
+          .header { background-color: #f2f2f2; padding: 10px; text-align: center; }
+          .content { margin: 20px; }
+          .footer { background-color: #f2f2f2; padding: 10px; text-align: center; font-size: 12px; }
+        </style>
+        </head>
+        <body>
+        <div class='header'>
+          <img src='https://imgur.com/2V6Aodm.png' alt='Logo' style='width:100px;'>
+        </div>
+        <div class='content'>
+          <h1>Bienvenue %s !</h1>
+          <p>Merci de vous être enregistré. Veuillez cliquer sur le lien ci-dessous pour activer votre compte :</p>
+          <a href='%s'>Activez maintenant</a>
+        </div>
+        <div class='footer'>
+          <p>&copy; %d - Le Phare Culturel. All rights reserved.</p>
+        </div>
+        </body>
+        </html>
+        """.formatted(name, link, LocalDate.now().getYear());
   }
 
 }

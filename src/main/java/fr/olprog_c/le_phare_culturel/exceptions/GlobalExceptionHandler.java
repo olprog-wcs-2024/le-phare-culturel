@@ -14,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.lang.reflect.Field;
@@ -61,6 +62,21 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> disableException(DisabledException exception) {
     log.error("Une erreur s'est produite", exception);
     return getStringResponseEntity(exception);
+  }
+
+  @ExceptionHandler(HttpServerErrorException.class)
+  public ResponseEntity<String> httpServerException(HttpServerErrorException exception) {
+    var m = Map.of(STATUS, exception.getStatusCode().value(), ERROR_MESSAGE,
+        exception.getMessage().replace(exception.getStatusCode().value() + " ", ""));
+
+    try {
+      String message = mapper.writeValueAsString(m);
+      return ResponseEntity.status(exception.getStatusCode().value()).contentType(MediaType.APPLICATION_PROBLEM_JSON)
+          .body(message);
+
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_PROBLEM_JSON).build();
+    }
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)

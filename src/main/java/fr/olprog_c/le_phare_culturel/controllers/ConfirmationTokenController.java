@@ -1,13 +1,13 @@
 package fr.olprog_c.le_phare_culturel.controllers;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
+import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
 import fr.olprog_c.le_phare_culturel.services.AuthService;
 
-@RestController
+@Controller
 public class ConfirmationTokenController {
 
   private final AuthService authService;
@@ -16,9 +16,9 @@ public class ConfirmationTokenController {
     this.authService = authService;
   }
 
-  @GetMapping("/confirm")
-  public ResponseEntity<String> confirmUser(@RequestParam("token") String token) {
+  @GetMapping(RouteDefinition.CONFIRM_EMAIL)
+  public String confirmUser(@RequestParam("token") String token) {
     authService.confirmUser(token);
-    return ResponseEntity.ok("User confirmed successfully");
+    return "confirmToken";
   }
 }
