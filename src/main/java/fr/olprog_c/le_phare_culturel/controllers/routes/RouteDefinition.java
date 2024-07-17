@@ -16,4 +16,6 @@ public final class RouteDefinition {
   // users
   public static final String LOGOUT_URL = USERS_URL + "/logout";
   public static final String LOGIN_RESET_PASSWORD_URL = USERS_URL + "/reset-password";
+
+  public static final String CONFIRM_EMAIL = "/confirm";
 }

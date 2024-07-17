@@ -42,7 +42,7 @@ public class SecurityConfiguration {
                       RouteDefinition.LOGIN_URL,
                       RouteDefinition.REGISTER_URL,
                       RouteDefinition.LOGOUT_URL,
-                      "/confirm",
+                      RouteDefinition.CONFIRM_EMAIL,
                       RouteDefinition.LOGIN_RESET_PASSWORD_URL)
                   .permitAll()
                   .anyRequest().authenticated();
@@ -63,7 +63,8 @@ public class SecurityConfiguration {
               response.setContentType("application/json;charset=UTF-8");
               response.setStatus(HttpServletResponse.SC_FORBIDDEN);
               Map<String, ?> errors = Map.of("status", HttpServletResponse.SC_FORBIDDEN,
-                  "error_message", "Accès interdit", "raw_message", accessDeniedException.getMessage());
+                  "error_message", "Accès interdit", "raw_message",
+                  accessDeniedException.getMessage());
               response.getWriter().write(new ObjectMapper().writeValueAsString(errors));
             }))
         .build();
