@@ -24,7 +24,7 @@ public class UserController {
     }
 
     /* ******* ****** ****** ****** */
-    @GetMapping(RouteDefinition.USER_PROFILE_URL)
+    @GetMapping(RouteDefinition.Users.PROFILE_URL)
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal UserEntity user) {
 
         System.out.println("Received Get Request :" + user);
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     /* ******* ****** ****** ****** */
-    @PutMapping(RouteDefinition.USER_PROFILE_CHANGE_PASSWORD_URL)
+    @PutMapping(RouteDefinition.Users.CHANGE_PASSWORD_URL)
     public ResponseEntity<?> putNewPassword(
             @Valid @RequestBody UserPostRequestPasswordDTO body,
             @AuthenticationPrincipal UserEntity user
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     /* ******* ****** ****** ****** */
-    @PutMapping(RouteDefinition.USER_PROFILE_AVATAR_URL)
+    @PutMapping(RouteDefinition.Users.AVATAR_URL)
     public ResponseEntity<?> putNewAvatar(
             @Valid @RequestBody UserPostRequestAvatarDTO body,
             @AuthenticationPrincipal UserEntity user

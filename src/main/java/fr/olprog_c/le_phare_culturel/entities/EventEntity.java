@@ -49,8 +49,8 @@ public class EventEntity extends BaseCommonEntity {
   private Collection<EventGroupUserEntity> referencedEventGroupsID;
 
   @ManyToMany()
-  @JoinTable(name = "fk_events_referer_keywords", joinColumns = @JoinColumn(name = "events_id"), inverseJoinColumns = @JoinColumn(name = "keywords_id")
-
-  )
+  @JoinTable(name = "fk_events_referer_keywords",
+          joinColumns = @JoinColumn(name = "events_id"),
+          inverseJoinColumns = @JoinColumn(name = "keywords_id") )
   private Collection<EventKeywordEntity> referencedKeywordsList;
 }

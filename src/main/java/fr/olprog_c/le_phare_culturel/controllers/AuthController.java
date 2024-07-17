@@ -2,8 +2,8 @@ package fr.olprog_c.le_phare_culturel.controllers;
 
 import java.util.Map;
 
+import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 
 import fr.olprog_c.le_phare_culturel.configuration.JWTService;
-import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
 import fr.olprog_c.le_phare_culturel.dtos.AuthLoginPostDTO;
 import fr.olprog_c.le_phare_culturel.dtos.AuthRegisterPostDTO;
 import fr.olprog_c.le_phare_culturel.dtos.mapper.AuthDTOMapper;
@@ -38,7 +37,7 @@ public class AuthController {
     this.authenticationManager = authenticationManager;
   }
 
-  @PostMapping(RouteDefinition.LOGIN_URL)
+  @PostMapping(RouteDefinition.Auth.LOGIN_URL)
   public ResponseEntity<?> login(@Valid @RequestBody AuthLoginPostDTO dto, HttpServletResponse response) {
     try {
       final Authentication authenticate = authenticationManager.authenticate(
@@ -63,7 +62,7 @@ public class AuthController {
     return null;
   }
 
-  @PostMapping(RouteDefinition.REGISTER_URL)
+  @PostMapping(RouteDefinition.Auth.REGISTER_URL)
   public void register(@Valid @RequestBody AuthRegisterPostDTO dto) {
     if (dto.confirmPassword().equals(dto.password())) {
       this.authService.register(dto);
