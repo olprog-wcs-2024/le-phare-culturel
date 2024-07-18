@@ -11,5 +11,5 @@ public interface EventRepository extends
         JpaRepository<EventEntity, Integer>,
         JpaSpecificationExecutor<EventEntity>
 {
-    List<EventEntity> findEventsBySpecification(Specification<EventEntity> specification);
+    // List<EventEntity> findEventsBySpecification(Specification<EventEntity> specification);
 }

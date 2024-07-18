@@ -36,6 +36,8 @@ public class EventFiltersSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             for (Map.Entry<String, String> filter : filters.entrySet()) {
+
+                // column / FieldName like getValue
                 predicates.add(criteriaBuilder.like(root.get(filter.getKey()), likePattern(filter.getValue())));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

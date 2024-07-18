@@ -1,18 +1,13 @@
 package fr.olprog_c.le_phare_culturel.dtos.event;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.olprog_c.le_phare_culturel.entities.UserEntity;
 
-import java.time.LocalDate;
-import java.util.List;
-
-public class EventEntityGETResponseDTO {
+public class EventEntityResponseDTO {
     private String uid;
     private String slug;
     private String description;
     private String descriptionLongFr;
-    private EventInfoGETResponseDTO info;
+    private EventInfoResponseDTO info;
 
     @JsonProperty("uid")
     public String getUid() {
@@ -55,12 +50,12 @@ public class EventEntityGETResponseDTO {
     }
 
     @JsonProperty("info")
-    public EventInfoGETResponseDTO getInfo() {
+    public EventInfoResponseDTO getInfo() {
         return info;
     }
 
     @JsonProperty("info")
-    public void setInfo(EventInfoGETResponseDTO value) {
+    public void setInfo(EventInfoResponseDTO value) {
         this.info = value;
     }
 }

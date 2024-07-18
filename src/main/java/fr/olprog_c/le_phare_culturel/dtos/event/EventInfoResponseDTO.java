@@ -5,8 +5,8 @@ import fr.olprog_c.le_phare_culturel.entities.UserEntity;
 
 import java.util.List;
 
-// EventInfoGETResponseDTO.java
-public class EventInfoGETResponseDTO {
+// EventInfoResponseDTO.java
+public class EventInfoResponseDTO {
     private String registration;
     private String onlineaccessLink;
     private List<EventLocationPlaceDTO> locationPlace;
@@ -15,8 +15,8 @@ public class EventInfoGETResponseDTO {
     private String attendancemode;
     private String status;
     private List<String> accessibility;
-    private List<String> keywordsFr;
-    private List<String> categories;
+    private List<EventKeywordDescriptor> keywordsFr;
+    private List<EventCategoryDescriptor> categories;
     private EventImagesDTO images;
     private EventDateInformationDTO eventDateInformationDTO;
     private List<EventParticipantsGroupDTO> eventParticipantsGroupDTOS;
@@ -102,22 +102,22 @@ public class EventInfoGETResponseDTO {
     }
 
     @JsonProperty("keywords_fr")
-    public List<String> getKeywordsFr() {
+    public List<EventKeywordDescriptor> getKeywordsFr() {
         return keywordsFr;
     }
 
     @JsonProperty("keywords_fr")
-    public void setKeywordsFr(List<String> value) {
+    public void setKeywordsFr(List<EventKeywordDescriptor> value) {
         this.keywordsFr = value;
     }
 
     @JsonProperty("categories")
-    public List<String> getCategories() {
+    public List<EventCategoryDescriptor> getCategories() {
         return categories;
     }
 
     @JsonProperty("categories")
-    public void setCategories(List<String> value) {
+    public void setCategories(List<EventCategoryDescriptor> value) {
         this.categories = value;
     }
 

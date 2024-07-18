@@ -2,7 +2,7 @@ package fr.olprog_c.le_phare_culturel.controllers;
 
 import fr.olprog_c.le_phare_culturel.controllers.routes.EventParametersConstants;
 import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventEntityGETResponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventEntityResponseDTO;
 import fr.olprog_c.le_phare_culturel.services.EventService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,11 +25,12 @@ public class EventController {
                     RouteDefinition.Events.FILTER_URL,
                     RouteDefinition.Events.EVENTS_URL
             })
-    public List<EventEntityGETResponseDTO> getAllEventsByFiltering(
+    public List<EventEntityResponseDTO> getAllEventsByFiltering(
             @PathVariable(required = false, name = "filters") String tagsFilter,
             @PathVariable(required = false, name = "tags") String tags,
             @RequestParam Map<String, String> filters
     ) {
+        System.out.println("Receive GET Events : "+tagsFilter+ " :: "+tags+" :: "+filters);
         int pageNumber = (filters.containsKey(EventParametersConstants.PAGE_NUMBER.getStringValue()) ? Integer.parseInt(filters.get(EventParametersConstants.PAGE_NUMBER.getIntegerValue())) : 0);
         ;
         int pageSize = (filters.containsKey(EventParametersConstants.PAGE_SIZE.getIntegerValue()) ? Integer.parseInt(filters.get(EventParametersConstants.PAGE_SIZE.getIntegerValue())) : 0);
