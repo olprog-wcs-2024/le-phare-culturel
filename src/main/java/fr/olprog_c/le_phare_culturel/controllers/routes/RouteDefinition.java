@@ -14,6 +14,9 @@ public final class RouteDefinition {
   public static final String REGISTER_URL = AUTH_URL + "/sign-up";
 
   // users
+  public static final String USER_PROFILE_URL = USERS_URL + "/profile";
+  public static final String USER_PROFILE_AVATAR_URL = USERS_URL + "/avatar";
+  public static final String USER_PROFILE_CHANGE_PASSWORD_URL = USERS_URL + "/new-password";
   public static final String LOGOUT_URL = USERS_URL + "/logout";
   public static final String LOGIN_RESET_PASSWORD_URL = USERS_URL + "/reset-password";
 

@@ -33,6 +33,7 @@ public class UserEntity extends BaseCommonEntity implements UserDetails {
 
   @Enumerated(EnumType.STRING)
   // @Column(name = "role", nullable = false)
+  // @ColumnDefault(value = "\""+ UserRoleEnum.USER.getStringValue() + "\"")
   private UserRoleEnum userRole;
 
   @Column(name = "profile_nickname", unique = true, nullable = false, length = 32)
@@ -92,7 +93,7 @@ public class UserEntity extends BaseCommonEntity implements UserDetails {
 
   @Override
   public boolean isAccountNonLocked() {
-    return true;// UserDetails.super.isAccountNonLocked();
+    return ! userEnabled;// UserDetails.super.isAccountNonLocked();
   }
 
   public boolean isAccountNonExpired() {
