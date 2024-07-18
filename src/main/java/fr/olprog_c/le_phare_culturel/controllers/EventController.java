@@ -2,15 +2,15 @@ package fr.olprog_c.le_phare_culturel.controllers;
 
 import fr.olprog_c.le_phare_culturel.controllers.routes.EventParametersConstants;
 import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventEntityResponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.*;
 import fr.olprog_c.le_phare_culturel.services.EventService;
+import jdk.jfr.Event;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class EventController {
@@ -24,13 +24,146 @@ public class EventController {
     /**
      * Fetches a single event by its id
      *
-     * @param id The id of event to fetch.
+     * @param eventid The id of event to fetch.
      * @return The fetched EventEntityResponseDTO.
      */
-    @GetMapping(value = RouteDefinition.Events.EVENTS_WITH_URL)
-    public EventEntityResponseDTO getAllEventsWithFiltering(@PathVariable int id) {
-        System.out.println("Receive GET Events ID : " + id);
-        return eventService.findByID(id);
+    @GetMapping(value = RouteDefinition.Events.EVENTS_WITH_ID_URL)
+    public EventEntityResponseDTO getEventsByID(@PathVariable int eventid) {
+        System.out.println("Receive GET Events ID : " + eventid);
+        return eventService.findByID(eventid);
+    }
+
+    /**
+     * Fetches a single event by its id. Currently returns an empty {@link EventEntityResponseDTO} object.
+     *
+     * @param eventid The id of the event to fetch.
+     * @return An empty {@link EventEntityResponseDTO} object.
+     */
+    @GetMapping(value = RouteDefinition.Events.EVENTS_WITH_ID_GROUP_LIST_URL)
+    public EventEntityResponseDTO getEventByIDGroupList(@PathVariable int eventid) {
+        System.out.println("Receive GET Events ID for Group List : " + eventid);
+        // ROOT NODE
+        EventEntityResponseDTO responseDTO = new EventEntityResponseDTO();
+        // PREPARE GROUP FOR EVENT INFO
+        List<EventParticipantsGroupDTO>  groupParticipant = new ArrayList<EventParticipantsGroupDTO>();
+
+        EventParticipantsGroupDTO groupForID =  new EventParticipantsGroupDTO();
+
+
+        groupForID.setID( (long) (new Random())
+                .ints(1, 22)
+                .findFirst().getAsInt()
+        );
+        groupForID.setCount((long) (new Random())
+                .ints(1, 32)
+                .findFirst().getAsInt()
+        );
+        groupForID.setName("Group name ("+ Arrays.toString(Character.toChars(65 +
+                (new Random())
+                        .ints(1, 8)
+                        .findFirst().getAsInt()
+        ))
+                +")");
+        groupParticipant.add(groupForID);
+        /* ****** ****** ****** ****** */
+
+        groupForID.setID( (long) (new Random())
+                .ints(1, 22)
+                .findFirst().getAsInt()
+        );
+        groupForID.setCount((long) (new Random())
+                .ints(1, 32)
+                .findFirst().getAsInt()
+        );
+        groupForID.setName("Group name ("+ Arrays.toString(Character.toChars(65 +
+                (new Random())
+                        .ints(1, 8)
+                        .findFirst().getAsInt()
+        ))
+                +")");
+        groupParticipant.add(groupForID);
+        /* ****** ****** ****** ****** */
+        groupForID.setID( (long) (new Random())
+                .ints(1, 22)
+                .findFirst().getAsInt()
+        );
+        groupForID.setCount((long) (new Random())
+                .ints(1, 32)
+                .findFirst().getAsInt()
+        );
+        groupForID.setName("Group name ("+ Arrays.toString(Character.toChars(65 +
+                        (new Random())
+                                .ints(1, 8)
+                                .findFirst().getAsInt()
+                ))
+        +")");
+        groupParticipant.add(groupForID);
+        /* ****** ****** ****** ****** */
+
+        EventInfoResponseDTO eventInfoResponseDTO = new EventInfoResponseDTO();
+
+        EventCategoryDescriptor eventCategory = new EventCategoryDescriptor();
+        List<EventCategoryDescriptor> categoryDescriptorList = new ArrayList<EventCategoryDescriptor>();
+
+        eventCategory.setCategoryName("Yolo");
+        eventCategory.setColor(EventColorDescriptor.RED);
+        categoryDescriptorList.add(eventCategory);
+        eventInfoResponseDTO.setCategories(categoryDescriptorList);
+        /* ****** ****** ****** ****** */
+        eventInfoResponseDTO.setParticipantsGroups(groupParticipant);
+        // SET SUBNODE CONTAINING ALL INFORMATION FORMAT
+        responseDTO.setInfo(eventInfoResponseDTO);
+        return responseDTO;
+    }
+
+    /**
+     * Currently returns an empty {@link EventEntityResponseDTO} object.
+     *
+     * @param eventid The id of event to fetch.
+     * @param groupid The id of backend group to fetch.
+     * @return An empty {@link EventEntityResponseDTO} object.
+     */
+    @GetMapping(value = RouteDefinition.Events.EVENTS_WITH_ID_GROUP_WITH_ID_URL)
+    public EventEntityResponseDTO getEventByIDGroupByID(@PathVariable int eventid, @PathVariable int groupid) {
+        System.out.println("Receive GET Events ID for Group ID : " + eventid + " :: " + groupid);
+        EventEntityResponseDTO responseDTO = new EventEntityResponseDTO();
+        // PREPARE GROUP FOR EVENT INFO
+        List<EventParticipantsGroupDTO>  groupParticipant = new ArrayList<EventParticipantsGroupDTO>();
+        EventParticipantsGroupDTO groupForID =  new EventParticipantsGroupDTO();
+
+        groupForID.setID( (long) (new Random())
+                .ints(1, 22)
+                .findFirst().getAsInt()
+        );
+        groupForID.setCount((long) (new Random())
+                .ints(1, 32)
+                .findFirst().getAsInt()
+        );
+        groupForID.setName("Group name ("+ Arrays.toString(Character.toChars(65 +
+                (new Random())
+                        .ints(1, 8)
+                        .findFirst().getAsInt()
+        ))
+                +")");
+        groupParticipant.add(groupForID);
+        /* ****** ****** ****** ****** */
+
+        EventInfoResponseDTO eventInfoResponseDTO = new EventInfoResponseDTO();
+        eventInfoResponseDTO.setParticipantsGroups(groupParticipant);
+        // SET SUBNODE CONTAINING ALL INFORMATION FORMAT
+
+        EventCategoryDescriptor eventCategory = new EventCategoryDescriptor();
+        List<EventCategoryDescriptor> categoryDescriptorList = new ArrayList<EventCategoryDescriptor>();
+
+        eventCategory.setCategoryName("Youpi");
+        eventCategory.setColor(EventColorDescriptor.DARK_BLUE);
+        categoryDescriptorList.add(eventCategory);
+        eventInfoResponseDTO.setCategories(categoryDescriptorList);
+        /* ****** ****** ****** ****** */
+
+
+        responseDTO.setInfo(eventInfoResponseDTO);
+        return responseDTO;
     }
 
     /**

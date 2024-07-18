@@ -150,5 +150,9 @@ public class EventInfoResponseDTO {
     public void setParticipantsGroups(List<EventParticipantsGroupDTO> value) {
         this.eventParticipantsGroupDTOS = value;
     }
+    @JsonProperty("participants_groups_count")
+    public int getParticipantsGroupsCount() {
+        return ((this.eventParticipantsGroupDTOS != null) ? this.eventParticipantsGroupDTOS.size(): 0);
+    }
 }
 

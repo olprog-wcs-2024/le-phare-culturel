@@ -49,9 +49,12 @@ public class SecurityConfiguration {
                                             RouteDefinition.Users.AVATAR_URL,
                                             /* ****** ****** ****** ****** */
                                             // RouteDefinition.Events.EVENTS_URL,
-                                            // RouteDefinition.Events.FILTER_URL,
-                                            // RouteDefinition.Events.TAGS_URL,
-                                            // RouteDefinition.Events.TAGS_FILTER_URL,
+                                            // RouteDefinition.Events.EVENTS_WITH_ID_URL,
+                                            RouteDefinition.Events.EVENTS_WITH_ID_GROUP_LIST_URL,
+                                            // RouteDefinition.Events.EVENTS_WITH_ID_GROUP_WITH_ID_URL,
+                                            RouteDefinition.Events.FILTER_URL,
+                                            RouteDefinition.Events.TAGS_URL,
+                                            RouteDefinition.Events.TAGS_FILTER_URL,
                                             /* ****** ****** ****** ****** */
                                             RouteDefinition.Groups.TAGS_URL
 

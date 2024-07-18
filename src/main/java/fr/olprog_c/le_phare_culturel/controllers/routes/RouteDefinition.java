@@ -25,7 +25,11 @@ public final class RouteDefinition {
 
     public static class Events {
         public static final String EVENTS_URL = "/events";
-        public static final String EVENTS_WITH_URL = EVENTS_URL+"/{id}";
+        public static final String EVENTS_WITH_ID_URL = EVENTS_URL+"/{eventid}";
+
+        public static final String EVENTS_WITH_ID_GROUP_WITH_ID_URL = EVENTS_URL+"/{eventid}/"+Groups.GROUPS_WITH_ID_URL;
+
+        public static final String EVENTS_WITH_ID_GROUP_LIST_URL= EVENTS_URL+"/{eventid}/"+Groups.GROUPS_URL;
 
         public static final String TAGS_URL = EVENTS_URL + "/tags/{filters}";
         public static final String TAGS_FILTER_URL = EVENTS_URL + "/filters/{tags}";
@@ -34,7 +38,7 @@ public final class RouteDefinition {
 
     public static class Groups {
         private static final String GROUPS_URL = "/groups";
-        private static final String GROUPS_WITH_ID_URL = GROUPS_URL + "/{id}";
+        private static final String GROUPS_WITH_ID_URL = GROUPS_URL + "/{groupid}";
         public static final String TAGS_URL = GROUPS_URL + "/" + EventParametersConstants.FILTER_TAGS_NAME;
     }
 
