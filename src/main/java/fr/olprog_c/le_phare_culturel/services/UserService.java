@@ -1,6 +1,8 @@
 package fr.olprog_c.le_phare_culturel.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fr.olprog_c.le_phare_culturel.dtos.user.UserAvatarPutRequestDTO;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserPostRequestDTO;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserPostResponseDTO;
 import fr.olprog_c.le_phare_culturel.entities.UserEntity;
@@ -13,9 +15,9 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private static UserRepository userRepository;
+    private UserRepository userRepository;
     /* ****** ****** utile Object.andThen(save()) ****** ****** */
-    private static UserEntity userEntity;
+    private UserEntity userEntity;
 
     /**
      * UserService constructor
@@ -35,7 +37,7 @@ public class UserService {
      */
     public UserPostResponseDTO convertEntityToResponseDTO(UserEntity user) {
         try {
-            return (new  ObjectMapper()).convertValue(user, UserPostResponseDTO.class);
+            return (new ObjectMapper()).convertValue(user, UserPostResponseDTO.class);
         } catch (Exception e) {
             throw new BadCredentialsException(" Erreur de conversion : " + e.getMessage());
         }
@@ -47,15 +49,14 @@ public class UserService {
      * @param body The request DTO containing the new user data
      * @param user The entity to be updated
      * @return This service, for chaining
-     * @throws BadCredentialsException If the old and new password are identical or the replacement password is different
+     * @throws BadCredentialsException If the old and new password are identical or
+     *                                 the replacement password is different
      */
     public UserService convertRequestDtoToEntity(UserPostRequestDTO body, UserEntity user) {
-        userEntity = user;
 
         // case of changing password
         if ((body.newPassword() != null && !body.newPassword().isEmpty())
-                && (body.password() != null && !body.password().isEmpty())
-        ) {
+                && (body.password() != null && !body.password().isEmpty())) {
             if (Objects.equals(AuthService.passwordEncoding(body.newPassword()), user.getPassword())) {
                 throw new BadCredentialsException("l ancien et le nouveau Mot de passe sont identiques");
             }
@@ -86,7 +87,18 @@ public class UserService {
             user.setAvatar(body.avatar());
 
         }
+        userEntity = user;
 
+        return this;
+    }
+
+    public UserService convertRequestDtoToEntity(UserAvatarPutRequestDTO dto, UserEntity user) {
+        System.out.println(dto);
+        if (dto.url() != null && !dto.url().isEmpty()) {
+            user.setAvatar(dto.url());
+        }
+
+        this.userEntity = user;
         return this;
     }
 
@@ -97,15 +109,16 @@ public class UserService {
      */
     public boolean save() {
         Optional<UserEntity> existingUserEntity = userRepository.findById(userEntity.getId());
-        boolean entityPresent = existingUserEntity.isPresent();
         boolean saved = false;
-        if (entityPresent) {
-            UserEntity savedEntity = userRepository.save(userEntity);
-            if (!existingUserEntity.get().equals(savedEntity)) {
+        if (existingUserEntity.isPresent()) {
+            UserEntity savedEntity = userRepository.save(this.userEntity);
+            System.out.println(this.userEntity);
+            System.out.println(existingUserEntity);
+            if (existingUserEntity.get().equals(savedEntity)) {
                 saved = true;
             }
         }
-        userEntity = null;
         return saved;
     }
+
 }

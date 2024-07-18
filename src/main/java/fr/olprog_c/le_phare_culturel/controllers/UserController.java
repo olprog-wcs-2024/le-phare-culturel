@@ -1,6 +1,7 @@
 package fr.olprog_c.le_phare_culturel.controllers;
 
 import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
+import fr.olprog_c.le_phare_culturel.dtos.user.UserAvatarPutRequestDTO;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserPostRequestDTO;
 import fr.olprog_c.le_phare_culturel.entities.UserEntity;
 import fr.olprog_c.le_phare_culturel.services.UserService;
@@ -33,8 +34,7 @@ public class UserController {
     @PutMapping(RouteDefinition.USER_PROFILE_CHANGE_PASSWORD_URL)
     public ResponseEntity<?> putNewPassword(
             @Valid @RequestBody UserPostRequestDTO body,
-            @AuthenticationPrincipal UserEntity user
-    ) {
+            @AuthenticationPrincipal UserEntity user) {
         System.out.println("Received Put Request :" + user);
         if (userService.convertRequestDtoToEntity(body, user).save()) {
             return ResponseEntity.ok(userService.convertEntityToResponseDTO(user));
@@ -45,9 +45,8 @@ public class UserController {
     /* ******* ****** ****** ****** */
     @PutMapping(RouteDefinition.USER_PROFILE_AVATAR_URL)
     public ResponseEntity<?> putNewAvatar(
-            @Valid @RequestBody UserPostRequestDTO body,
-            @AuthenticationPrincipal UserEntity user
-    ) {
+            @Valid @RequestBody UserAvatarPutRequestDTO body,
+            @AuthenticationPrincipal UserEntity user) {
         System.out.println("Received Put Request :" + user);
         if (userService.convertRequestDtoToEntity(body, user).save()) {
             return ResponseEntity.ok(userService.convertEntityToResponseDTO(user));
