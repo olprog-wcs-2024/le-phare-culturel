@@ -93,11 +93,11 @@ public class UserEntity extends BaseCommonEntity implements UserDetails {
 
   @Override
   public boolean isAccountNonLocked() {
-    return this.userEnabled;// UserDetails.super.isAccountNonLocked();
+    return this.userEnabled;
   }
 
   public boolean isAccountNonExpired() {
-    return true;
+    return this.deletedDate == null;
   }
 
 }
