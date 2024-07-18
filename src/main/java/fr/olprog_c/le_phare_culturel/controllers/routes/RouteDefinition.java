@@ -25,19 +25,20 @@ public final class RouteDefinition {
 
     public static class Events {
         public static final String EVENTS_URL = "/events";
+        public static final String EVENTS_WITH_URL = EVENTS_URL+"/{id}";
 
-        public static final String TAGS_URL = EVENTS_URL + "/tags/{tags}";
-        public static final String TAGS_FILTER_URL = EVENTS_URL + "/tags/{tags}/filter";
-        public static final String FILTER_URL = EVENTS_URL + "/filter";
+        public static final String TAGS_URL = EVENTS_URL + "/tags/{filters}";
+        public static final String TAGS_FILTER_URL = EVENTS_URL + "/filters/{tags}";
+        public static final String FILTER_URL = EVENTS_URL + "/filters";
     }
 
     public static class Groups {
         private static final String GROUPS_URL = "/groups";
-        private static final String GROUPS_WITH_ID_URL = GROUPS_URL+"/{id}";
-        public static final String TAGS_URL = GROUPS_URL + "/tags";
+        private static final String GROUPS_WITH_ID_URL = GROUPS_URL + "/{id}";
+        public static final String TAGS_URL = GROUPS_URL + "/" + EventParametersConstants.FILTER_TAGS_NAME;
     }
 
-    public static List<String> getAllRoutes(){
+    public static List<String> getAllRoutes() {
 
         return List.of(
                 Auth.LOGIN_URL,

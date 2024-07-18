@@ -10,7 +10,7 @@ public class EventDTOMapper {
         return new EventEntityResponseDTO();
     }
 
-    public static EventEntity convertEventDToEntity( EventEntityResponseDTO responseDTO)
+    public static EventEntity convertEventDtoToEntity( EventEntityResponseDTO responseDTO)
     {
         return new EventEntity();
     }

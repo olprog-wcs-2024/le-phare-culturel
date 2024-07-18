@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -47,8 +48,12 @@ public class EventService {
      * @param id Integer specifying the ID of the event, must not be negative.
      * @return EventEntity instance if found, else null.
      */
-    public EventEntity findByID(int id) {
-        return eventRepository.findById(Math.max(0, id)).orElse(null);
+    public EventEntityResponseDTO findByID(int id) {
+        Optional<EventEntity> retrievedEvent = eventRepository.findById(Math.max(0, id));
+        if (retrievedEvent.isPresent()) {
+            return retrievedEvent.map(EventDTOMapper::convertEntityToResponseDTO).orElse(null);
+        }
+        return null;
     }
 
     /**

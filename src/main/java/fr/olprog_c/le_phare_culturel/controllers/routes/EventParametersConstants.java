@@ -5,6 +5,8 @@ import java.util.Arrays;
 public enum EventParametersConstants {
     DEFAULT_PAGE_SIZE(20),
     DEFAULT_PAGE_OFFSET(0),
+    FILTER_TAGS_NAME("tags"),
+    FILTER_NAME("filters"),
     PAGE_SIZE("pageSize"),
     PAGE_NUMBER("pageNumber"),
     CATEGORY("category"),
