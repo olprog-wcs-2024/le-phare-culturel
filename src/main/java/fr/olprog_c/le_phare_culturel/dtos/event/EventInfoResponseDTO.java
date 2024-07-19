@@ -17,8 +17,7 @@ public class EventInfoResponseDTO {
     private List<String> accessibility;
     private List<EventKeywordDescriptor> keywordsFr;
     private List<EventCategoryDescriptor> categories;
-    private EventImagesDTO images;
-    private EventDateInformationDTO eventDateInformationDTO;
+
     private List<EventParticipantsGroupDTO> eventParticipantsGroupDTOS;
 
     @JsonProperty("registration")
@@ -119,26 +118,6 @@ public class EventInfoResponseDTO {
     @JsonProperty("categories")
     public void setCategories(List<EventCategoryDescriptor> value) {
         this.categories = value;
-    }
-
-    @JsonProperty("images")
-    public EventImagesDTO getImages() {
-        return images;
-    }
-
-    @JsonProperty("images")
-    public void setImages(EventImagesDTO value) {
-        this.images = value;
-    }
-
-    @JsonProperty("dates_calendar")
-    public EventDateInformationDTO getDatesCalendar() {
-        return eventDateInformationDTO;
-    }
-
-    @JsonProperty("dates_calendar")
-    public void setDatesCalendar(EventDateInformationDTO value) {
-        this.eventDateInformationDTO = value;
     }
 
     @JsonProperty("participants_groups")

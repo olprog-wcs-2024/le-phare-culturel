@@ -3,11 +3,24 @@ package fr.olprog_c.le_phare_culturel.dtos.event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EventEntityResponseDTO {
+    private int id;
     private String uid;
     private String slug;
     private String description;
     private String descriptionLongFr;
+    private EventImagesDTO images;
+    private EventDateInformationDTO eventDateInformationDTO;
     private EventInfoResponseDTO info;
+
+    @JsonProperty("id")
+    public int getId() {
+        return id;
+    }
+
+    @JsonProperty("id")
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @JsonProperty("uid")
     public String getUid() {
@@ -36,7 +49,7 @@ public class EventEntityResponseDTO {
 
     @JsonProperty("description")
     public void setDescription(String value) {
-        this.description = value;
+        this.description = (value !=null ? value.substring(0, 55):value);
     }
 
     @JsonProperty("description_long_fr")
@@ -58,6 +71,28 @@ public class EventEntityResponseDTO {
     public void setInfo(EventInfoResponseDTO value) {
         this.info = value;
     }
+
+
+    @JsonProperty("images")
+    public EventImagesDTO getImages() {
+        return images;
+    }
+
+    @JsonProperty("images")
+    public void setImages(EventImagesDTO value) {
+        this.images = value;
+    }
+
+    @JsonProperty("dates_calendar")
+    public EventDateInformationDTO getDatesCalendar() {
+        return eventDateInformationDTO;
+    }
+
+    @JsonProperty("dates_calendar")
+    public void setDatesCalendar(EventDateInformationDTO value) {
+        this.eventDateInformationDTO = value;
+    }
+
 }
 
 

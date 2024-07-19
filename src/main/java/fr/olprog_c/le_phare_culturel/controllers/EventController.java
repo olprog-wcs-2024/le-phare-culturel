@@ -44,60 +44,64 @@ public class EventController {
         System.out.println("Receive GET Events ID for Group List : " + eventid);
         // ROOT NODE
         EventEntityResponseDTO responseDTO = new EventEntityResponseDTO();
+        responseDTO.setId((new Random())
+                .ints(127, 1826)
+                .findFirst().getAsInt()
+        );
         // PREPARE GROUP FOR EVENT INFO
-        List<EventParticipantsGroupDTO>  groupParticipant = new ArrayList<EventParticipantsGroupDTO>();
+        List<EventParticipantsGroupDTO> groupParticipant = new ArrayList<EventParticipantsGroupDTO>();
 
-        EventParticipantsGroupDTO groupForID =  new EventParticipantsGroupDTO();
+        EventParticipantsGroupDTO eventParticipantsGroup = new EventParticipantsGroupDTO();
 
 
-        groupForID.setID( (long) (new Random())
+        eventParticipantsGroup.setID((long) (new Random())
                 .ints(1, 22)
                 .findFirst().getAsInt()
         );
-        groupForID.setCount((long) (new Random())
+        eventParticipantsGroup.setCount((long) (new Random())
                 .ints(1, 32)
                 .findFirst().getAsInt()
         );
-        groupForID.setName("Group name ("+ Arrays.toString(Character.toChars(65 +
+        eventParticipantsGroup.setName("Group name (" + Arrays.toString(Character.toChars(65 +
                 (new Random())
                         .ints(1, 8)
                         .findFirst().getAsInt()
         ))
-                +")");
-        groupParticipant.add(groupForID);
+                + ")");
+        groupParticipant.add(eventParticipantsGroup);
         /* ****** ****** ****** ****** */
 
-        groupForID.setID( (long) (new Random())
+        eventParticipantsGroup.setID((long) (new Random())
                 .ints(1, 22)
                 .findFirst().getAsInt()
         );
-        groupForID.setCount((long) (new Random())
+        eventParticipantsGroup.setCount((long) (new Random())
                 .ints(1, 32)
                 .findFirst().getAsInt()
         );
-        groupForID.setName("Group name ("+ Arrays.toString(Character.toChars(65 +
+        eventParticipantsGroup.setName("Group name (" + Arrays.toString(Character.toChars(65 +
                 (new Random())
                         .ints(1, 8)
                         .findFirst().getAsInt()
         ))
-                +")");
-        groupParticipant.add(groupForID);
+                + ")");
+        groupParticipant.add(eventParticipantsGroup);
         /* ****** ****** ****** ****** */
-        groupForID.setID( (long) (new Random())
+        eventParticipantsGroup.setID((long) (new Random())
                 .ints(1, 22)
                 .findFirst().getAsInt()
         );
-        groupForID.setCount((long) (new Random())
+        eventParticipantsGroup.setCount((long) (new Random())
                 .ints(1, 32)
                 .findFirst().getAsInt()
         );
-        groupForID.setName("Group name ("+ Arrays.toString(Character.toChars(65 +
-                        (new Random())
-                                .ints(1, 8)
-                                .findFirst().getAsInt()
-                ))
-        +")");
-        groupParticipant.add(groupForID);
+        eventParticipantsGroup.setName("Group name (" + Arrays.toString(Character.toChars(65 +
+                (new Random())
+                        .ints(1, 8)
+                        .findFirst().getAsInt()
+        ))
+                + ")");
+        groupParticipant.add(eventParticipantsGroup);
         /* ****** ****** ****** ****** */
 
         EventInfoResponseDTO eventInfoResponseDTO = new EventInfoResponseDTO();
@@ -127,25 +131,31 @@ public class EventController {
     public EventEntityResponseDTO getEventByIDGroupByID(@PathVariable int eventid, @PathVariable int groupid) {
         System.out.println("Receive GET Events ID for Group ID : " + eventid + " :: " + groupid);
         EventEntityResponseDTO responseDTO = new EventEntityResponseDTO();
-        // PREPARE GROUP FOR EVENT INFO
-        List<EventParticipantsGroupDTO>  groupParticipant = new ArrayList<EventParticipantsGroupDTO>();
-        EventParticipantsGroupDTO groupForID =  new EventParticipantsGroupDTO();
+        responseDTO.setId((new Random())
+                .ints(127, 1826)
+                .findFirst().getAsInt()
+        );
 
-        groupForID.setID( (long) (new Random())
+        // PREPARE GROUP FOR EVENT INFO
+        List<EventParticipantsGroupDTO> groupParticipant = new ArrayList<EventParticipantsGroupDTO>();
+        EventParticipantsGroupDTO eventParticipantsGroup = new EventParticipantsGroupDTO();
+
+        eventParticipantsGroup.setID((long) (new Random())
                 .ints(1, 22)
                 .findFirst().getAsInt()
         );
-        groupForID.setCount((long) (new Random())
+        eventParticipantsGroup.setCount((long) (new Random())
                 .ints(1, 32)
                 .findFirst().getAsInt()
         );
-        groupForID.setName("Group name ("+ Arrays.toString(Character.toChars(65 +
-                (new Random())
-                        .ints(1, 8)
-                        .findFirst().getAsInt()
-        ))
-                +")");
-        groupParticipant.add(groupForID);
+        eventParticipantsGroup.setName("Group name (" + Arrays.toString(Character.toChars(65 +
+                        (new Random())
+                                .ints(1, 8)
+                                .findFirst().getAsInt()
+                )
+        )
+                + ")");
+        groupParticipant.add(eventParticipantsGroup);
         /* ****** ****** ****** ****** */
 
         EventInfoResponseDTO eventInfoResponseDTO = new EventInfoResponseDTO();
