@@ -1,5 +1,6 @@
 package fr.olprog_c.le_phare_culturel.configuration;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ public class MyUserDetailsService implements UserDetailsService {
   }
 
   @Override
+  @Cacheable("users")
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     return this.userRepository.findByEmail(email)
         .orElseThrow(() -> new UsernameNotFoundException("Aucun utilisateur ne correspond à cet email"));

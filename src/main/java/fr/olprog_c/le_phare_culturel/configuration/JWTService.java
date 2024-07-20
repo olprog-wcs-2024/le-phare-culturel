@@ -21,103 +21,99 @@ import jakarta.annotation.PostConstruct;
 
 @Service
 public class JWTService {
-  public static final String COOKIE_TOKEN_NAME = "token";
+  public static final String ACCESS_TOKEN_NAME = "access_token";
+  public static final String REFRESH_TOKEN_NAME = "refresh_token";
 
   private final UserDetailsService userDetailsService;
 
-  @Value("#{${jwt-expiration:1440}* 60 * 1000}")
-  private Long tokenExpiration;
-  @Value("${jwt-secret:keysecret}")
+  @Value("#{${jwt.accessTokenExpirationMinutes:1} * 60}")
+  private Long accessTokenExpirationMs;
+
+  @Value("#{${jwt.refreshTokenExpirationMinutes:1440} * 60}")
+  private Long refreshTokenExpirationMs;
+
+  @Value("${jwt.secret:keysecret}")
   private String secret;
 
   private SecretKey secretSigningKeyForJWT;
-  private Map<String, Object> encodeClaims = null;
 
   public JWTService(UserDetailsService userDetailsService) {
     this.userDetailsService = userDetailsService;
   }
 
-  public long getTokenExpiration() {
-    return this.tokenExpiration;
-  }
-
-  /* ****** ****** ****** ****** */
   @PostConstruct
   private void init() {
-    this.secretSigningKeyForJWT = Keys.hmacShaKeyFor(
-        secret.getBytes(StandardCharsets.UTF_8));
-    this.encodeClaims = null;
+    this.secretSigningKeyForJWT = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
   }
 
-  /* ****** ****** ****** ****** */
-  public Map<String, String> generateEncodedTokenForEmail(String email) {
-    return generateEncodedToken(userDetailsService.loadUserByUsername(email));
+  public Map<String, String> generateTokensForEmail(String email) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    String accessToken = generateToken(userDetails, accessTokenExpirationMs);
+    String refreshToken = generateToken(userDetails, refreshTokenExpirationMs);
+    return Map.of(ACCESS_TOKEN_NAME, accessToken, REFRESH_TOKEN_NAME, refreshToken);
   }
 
-  /* ****** ****** ****** ****** */
-  public Map<String, String> generateEncodedToken(UserDetails argUserDetails) {
-    final Long jwtDateNow = System.currentTimeMillis();
-    final Date jwtExpirationDate = new Date(jwtDateNow + tokenExpiration);
+  private String generateToken(UserDetails userDetails, Long expirationMs) {
+    final long now = System.currentTimeMillis() / 1000;
+    final long expirationDate = now + expirationMs;
 
-    UserEntity user = (UserEntity) argUserDetails;
+    UserEntity user = (UserEntity) userDetails;
 
-    this.encodeClaims = Map.of(
-        "email", argUserDetails.getUsername(),
+    Map<String, Object> claims = Map.of(
+        "email", userDetails.getUsername(),
         "roles", user.getUserRole(),
-        Claims.EXPIRATION, jwtExpirationDate,
-        Claims.ISSUED_AT, jwtDateNow,
-        Claims.SUBJECT, argUserDetails.getUsername()
+        Claims.EXPIRATION, expirationDate,
+        Claims.ISSUED_AT, now,
+        Claims.SUBJECT, userDetails.getUsername());
 
-    );
-    // claims.put("roles", argUserDetails.getAuthorities());
-    final String localEncodedToken = Jwts.builder()
-        .claims(encodeClaims)
-        // .setSubject(argUserDetails.getUsername())
-        // .setIssuedAt(jwtDateNow)
-        // .setExpiration(jwtExpirationDate)
+    return Jwts.builder()
+        .claims(claims)
         .signWith(secretSigningKeyForJWT)
         .compact();
-    return Map.of(COOKIE_TOKEN_NAME, localEncodedToken);
   }
 
-  /* ****** ****** ****** ****** */
-  public Claims getDecodedTokenClaims(String argToken) {
-    if (argToken == null || argToken.isEmpty()) {
-      throw new BadCredentialsException("token invalid");
+  public Claims getDecodedTokenClaims(String token) {
+    if (token == null || token.isEmpty()) {
+      throw new BadCredentialsException("Token invalid");
     }
 
     return (Claims) Jwts.parser()
         .verifyWith(secretSigningKeyForJWT)
         .build()
-        .parse(argToken)
+        .parse(token)
         .getPayload();
   }
 
-  /* ****** ****** ****** ****** */
-  public boolean isTokenExpired(String argToken) {
+  public boolean isTokenExpired(String token) {
     try {
-      return (new Date()).after(getDecodedTokenClaims(argToken).getExpiration());
+      return new Date().after(getDecodedTokenClaims(token).getExpiration());
     } catch (JwtException e) {
       return false;
     }
   }
 
+  // public boolean validateToken(String token) {
+  // try {
+  // Claims claims = getDecodedTokenClaims(token);
+  // return !isTokenExpired(token);
+  // } catch (JwtException e) {
+  // return false;
+  // }
+  // }
+
   public String extractRoles(String token) {
     try {
-      return (String) getDecodedTokenClaims(token).get("role");
+      return (String) getDecodedTokenClaims(token).get("roles");
     } catch (JwtException e) {
       return null;
     }
   }
 
-  /* ****** ****** ****** ****** */
-  public String extractUsername(String argToken) {
+  public String extractUsername(String token) {
     try {
-      return getDecodedTokenClaims(argToken).getSubject();
+      return getDecodedTokenClaims(token).getSubject();
     } catch (JwtException e) {
       return null;
     }
-
   }
-
 }

@@ -16,7 +16,7 @@ public record AuthRegisterPostDTO(
 
     @JsonProperty("confirm_password") @NotNull @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\\w\\d\\s:])([^\\s]){8,64}$") String confirmPassword,
 
-    @JsonProperty("profile_nickname") @NotNull @Pattern(regexp = "^\\p{L}[\\p{L}\\d]{3,31}$", flags = Flag.UNICODE_CASE) String profileNickname,
+    @JsonProperty("profile_nickname") @NotNull @Pattern(regexp = "^\\p{L}[\\p{L}\\d]{2,31}$", flags = Flag.UNICODE_CASE) String profileNickname,
 
     @JsonProperty("profile_description") @NotNull @Length(min = 10, max = 320) String profileDescription,
 

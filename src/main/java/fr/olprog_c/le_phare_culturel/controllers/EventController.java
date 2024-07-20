@@ -215,7 +215,7 @@ public class EventController {
      * @return A list of filtered EventEntityResponseDTO.
      */
     @GetMapping(value = RouteDefinition.Events.EVENTS_URL)
-    public ResponseEntity<List<EventEntityResponseDTO>> getAllEventsWithFiltering(@RequestParam Map<String, String> filters) {
+    public ResponseEntity<Iterable<EventEntityResponseDTO>> getAllEventsWithFiltering(@RequestParam Map<String, String> filters) {
         int pageNumber = (filters.containsKey(EventParametersConstants.PAGE_NUMBER.getStringValue()) ? Integer.parseInt(filters.get(EventParametersConstants.PAGE_NUMBER.getStringValue())) : 0);
         int pageSize = (filters.containsKey(EventParametersConstants.PAGE_SIZE.getStringValue()) ? Integer.parseInt(filters.get(EventParametersConstants.PAGE_SIZE.getStringValue())) : EventParametersConstants.DEFAULT_PAGE_SIZE.getIntegerValue());
         System.out.println("Receive GET Events filters : " + filters + " :: pageNumber" + pageNumber + " :: pageSize :: " + pageSize);
@@ -231,7 +231,7 @@ public class EventController {
      * @return A list of filtered EventEntityResponseDTO.
      */
     @GetMapping(RouteDefinition.Events.TAGS_URL)
-    public ResponseEntity<List<EventEntityResponseDTO>> getEventsFromFilteringTags(
+    public ResponseEntity<Iterable<EventEntityResponseDTO>> getEventsFromFilteringTags(
             @PathVariable(required = false, name = "tags") String tags,
             @RequestParam Map<String, String> filters) {
         int pageNumber = (filters.containsKey(EventParametersConstants.PAGE_NUMBER.getStringValue()) ? Integer.parseInt(filters.get(EventParametersConstants.PAGE_NUMBER.getStringValue())) : 0);
@@ -250,7 +250,7 @@ public class EventController {
      * @return A list of filtered EventEntityResponseDTO.
      */
     @GetMapping(RouteDefinition.Events.FILTER_URL)
-    public ResponseEntity<List<EventEntityResponseDTO>> getEventsFromFiltering(
+    public ResponseEntity<Iterable<EventEntityResponseDTO>> getEventsFromFiltering(
             @PathVariable(required = false, name = "filters") String tagsFilter,
             @RequestParam Map<String, String> filters) {
 

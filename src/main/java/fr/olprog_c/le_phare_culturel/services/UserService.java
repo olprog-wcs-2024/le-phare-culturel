@@ -1,8 +1,10 @@
 package fr.olprog_c.le_phare_culturel.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.olprog_c.le_phare_culturel.dtos.user.UserPostRequestDTO;
-import fr.olprog_c.le_phare_culturel.dtos.user.UserPostResponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.user.UserNewPasswordPutRequestDTO;
+import fr.olprog_c.le_phare_culturel.dtos.mapper.UserDTOMapper;
+import fr.olprog_c.le_phare_culturel.dtos.user.UserAvatarPutRequestDTO;
+import fr.olprog_c.le_phare_culturel.dtos.user.UserRequestDTO;
+import fr.olprog_c.le_phare_culturel.dtos.user.UserResponseDTO;
 import fr.olprog_c.le_phare_culturel.entities.UserEntity;
 import fr.olprog_c.le_phare_culturel.repositories.UserRepository;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,9 +35,9 @@ public class UserService {
      * @return The converted UserPostResponseDTO
      * @throws BadCredentialsException If the conversion fails
      */
-    public UserPostResponseDTO convertEntityToResponseDTO(UserEntity user) {
+    public UserResponseDTO convertEntityToResponseDTO(UserEntity user) {
         try {
-            return (new  ObjectMapper()).convertValue(user, UserPostResponseDTO.class);
+            return UserDTOMapper.responseDTO(user);
         } catch (Exception e) {
             throw new BadCredentialsException(" Erreur de conversion : " + e.getMessage());
         }
@@ -44,49 +46,94 @@ public class UserService {
     /**
      * Updates a UserEntity based on a UserPostRequestDTO
      *
-     * @param body The request DTO containing the new user data
+     * @param requestDTO The request DTO containing the new user data
      * @param user The entity to be updated
      * @return This service, for chaining
      * @throws BadCredentialsException If the old and new password are identical or the replacement password is different
      */
-    public UserService convertRequestDtoToEntity(UserPostRequestDTO body, UserEntity user) {
-        userEntity = user;
+    public UserService convertRequestDtoToEntity(UserRequestDTO requestDTO, UserEntity user) {
 
         // case of changing password
-        if ((body.newPassword() != null && !body.newPassword().isEmpty())
-                && (body.password() != null && !body.password().isEmpty())
+        if ((requestDTO.newPassword() != null && !requestDTO.newPassword().isEmpty())
+                && (requestDTO.password() != null && !requestDTO.password().isEmpty())
         ) {
-            if (Objects.equals(AuthService.passwordEncoding(body.newPassword()), user.getPassword())) {
+            if (Objects.equals(AuthService.passwordEncoding(requestDTO.newPassword()), user.getPassword())) {
                 throw new BadCredentialsException("l ancien et le nouveau Mot de passe sont identiques");
             }
-            if (body.password().equals(body.newPassword())) {
-                user.setPassword(AuthService.passwordEncoding(body.newPassword()));
+            if (requestDTO.password().equals(requestDTO.newPassword())) {
+                user.setPassword(AuthService.passwordEncoding(requestDTO.newPassword()));
             } else {
                 throw new BadCredentialsException("Mot de passe de remplacement different");
             }
             // user.setUpdatedDate(LocalDateTime.now());
         }
         // case of profile profile description
-        if (body.firstName() != null && !body.firstName().isEmpty()) {
-            user.setFirstName(body.firstName());
+        if (requestDTO.firstName() != null && !requestDTO.firstName().isEmpty()) {
+            user.setFirstName(requestDTO.firstName());
         }
-        if (body.lastName() != null && !body.lastName().isEmpty()) {
-            user.setLastName(body.lastName());
+        if (requestDTO.lastName() != null && !requestDTO.lastName().isEmpty()) {
+            user.setLastName(requestDTO.lastName());
         }
-        if (body.profileDescription() != null && !body.profileDescription().isEmpty()) {
-            user.setProfileDescription(body.profileDescription());
+        if (requestDTO.profileDescription() != null && !requestDTO.profileDescription().isEmpty()) {
+            user.setProfileDescription(requestDTO.profileDescription());
         }
-        if (body.email() != null && !body.email().isEmpty()) {
-            user.setEmail(body.email());
+        if (requestDTO.email() != null && !requestDTO.email().isEmpty()) {
+            user.setEmail(requestDTO.email());
         }
-        if (body.profileNickname() != null && !body.profileNickname().isEmpty()) {
-            user.setProfileNickname(body.profileNickname());
+        if (requestDTO.profileNickname() != null && !requestDTO.profileNickname().isEmpty()) {
+            user.setProfileNickname(requestDTO.profileNickname());
         }
-        if (body.avatar() != null && !body.avatar().isEmpty()) {
-            user.setAvatar(body.avatar());
+        if (requestDTO.avatar() != null && !requestDTO.avatar().isEmpty()) {
+            user.setAvatar(requestDTO.avatar());
 
         }
 
+        userEntity = user;
+        return this;
+    }
+
+    /**
+     * Convert UserAvatarPutRequestDTO to UserEntity
+     *
+     * @param dto The UserAvatarPutRequestDTO containing updated avatar URL
+     * @param user The UserEntity to be updated
+     * @return This UserService instance for chaining
+     */
+    public UserService convertRequestAvatarDtoToEntity(UserAvatarPutRequestDTO dto, UserEntity user) {
+        System.out.println(dto);
+        if (dto.url() != null && !dto.url().isEmpty()) {
+            user.setAvatar(dto.url());
+        }
+
+        this.userEntity = user;
+        return this;
+    }
+
+    /**
+     * Update the UserEntity based on UserNewPasswordPutRequestDTO
+     *
+     * @param requestDTO The request DTO containing the new password data
+     * @param user The UserEntity to be updated
+     * @return This UserService instance for chaining
+     * @throws BadCredentialsException If the old and new password are identical, or if the confirmation password doesn't match the new password
+     */
+    public UserService convertRequestNewPasswordDtoToEntity(UserNewPasswordPutRequestDTO requestDTO, UserEntity user) {
+
+        if ((requestDTO.newPassword() != null && !requestDTO.newPassword().isEmpty())
+                && (requestDTO.password() != null && !requestDTO.password().isEmpty())
+        ) {
+            if (Objects.equals(AuthService.passwordEncoding(requestDTO.newPassword()), user.getPassword())) {
+                throw new BadCredentialsException("l ancien et le nouveau Mot de passe sont identiques");
+            }
+            if (requestDTO.password().equals(requestDTO.newPassword())) {
+                user.setPassword(AuthService.passwordEncoding(requestDTO.newPassword()));
+            } else {
+                throw new BadCredentialsException("Mot de passe de remplacement different");
+            }
+            // user.setUpdatedDate(LocalDateTime.now());
+        }
+
+        this.userEntity = user;
         return this;
     }
 
@@ -97,15 +144,14 @@ public class UserService {
      */
     public boolean save() {
         Optional<UserEntity> existingUserEntity = userRepository.findById(userEntity.getId());
-        boolean entityPresent = existingUserEntity.isPresent();
         boolean saved = false;
-        if (entityPresent) {
-            UserEntity savedEntity = userRepository.save(userEntity);
-            if (!existingUserEntity.get().equals(savedEntity)) {
+        if (existingUserEntity.isPresent()) {
+            UserEntity savedEntity = userRepository.save(this.userEntity);
+            if (existingUserEntity.get().equals(savedEntity)) {
                 saved = true;
             }
         }
-        userEntity = null;
         return saved;
     }
+
 }
