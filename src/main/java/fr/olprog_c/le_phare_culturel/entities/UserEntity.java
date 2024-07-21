@@ -70,7 +70,7 @@ public class UserEntity extends BaseCommonEntity implements UserDetails {
 
   @Column(nullable = false, length = 255)
   @ColumnDefault(value = "\"/assets/images/avatars/avatar1.svg\"")
-  private String avatar;
+  private String avatar = "/assets/images/avatars/avatar1.svg";
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -22,9 +22,7 @@ public record AuthRegisterPostDTO(
 
     @NotNull @Pattern(regexp = "^\\p{L}[\\p{L}\\s\\-]{1,55}$", flags = Flag.UNICODE_CASE) String firstname,
 
-    @NotNull @Pattern(regexp = "^\\p{L}[\\p{L}\\s\\-]{1,55}$", flags = Flag.UNICODE_CASE) String lastname,
-
-    String avatar
+    @NotNull @Pattern(regexp = "^\\p{L}[\\p{L}\\s\\-]{1,55}$", flags = Flag.UNICODE_CASE) String lastname
 
 ) {
 }

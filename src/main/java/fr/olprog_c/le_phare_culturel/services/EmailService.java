@@ -1,5 +1,7 @@
 package fr.olprog_c.le_phare_culturel.services;
 
+import fr.olprog_c.le_phare_culturel.repositories.UserRepository;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -12,9 +14,11 @@ import jakarta.mail.internet.MimeMessage;
 public class EmailService {
 
   private final JavaMailSender mailSender;
+  private final UserRepository userRepository;
 
-  public EmailService(JavaMailSender mailSender) {
+  public EmailService(JavaMailSender mailSender, UserRepository userRepository) {
     this.mailSender = mailSender;
+	  this.userRepository = userRepository;
   }
 
   @Async
@@ -26,6 +30,14 @@ public class EmailService {
     helper.setFrom("no-reply@le-phare-culturel.fr");
     helper.setText(htmlBody, true);
 
-    mailSender.send(message);
+    try {
+      mailSender.send(message);
+    } catch (MailException e) {
+      System.err.println(e.getMessage());
+      userRepository.findByEmail(to).ifPresent(user -> {
+        user.setUserEnabled(true);
+        userRepository.save(user);
+      });
+    }
   }
 }

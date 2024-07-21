@@ -3,12 +3,14 @@ package fr.olprog_c.le_phare_culturel.controllers;
 import java.time.Instant;
 import java.util.Map;
 
+import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,6 +35,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
+@EqualsAndHashCode
 @RestController
 public class AuthController {
 
@@ -53,22 +56,6 @@ public class AuthController {
     this.jwtService = jwtService;
     this.authenticationManager = authenticationManager;
     this.tokenBlacklistService = tokenBlacklistService;
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    return true;
   }
 
   @PostMapping(RouteDefinition.Auth.LOGIN_URL)
@@ -104,22 +91,25 @@ public class AuthController {
         return ResponseEntity.ok(AuthDTOMapper.responseDTO(user));
       }
 
+    } catch (BadCredentialsException e) {
+      throw new BadCredentialsException(e.getMessage());
+    }catch (LockedException l){
+      throw new LockedException(l.getMessage());
     } catch (Exception b) {
       throw new BadCredentialsException("Je ne vous connais pas!!");
     }
-    return null;
+	  return null;
   }
 
   private ResponseCookie getAccessTokenCookie(Map<String, String> tokens, String tokenName,
       Long tokenExpiration) {
-    ResponseCookie cookie = ResponseCookie
+	  return ResponseCookie
         .from(tokenName, tokens.get(tokenName))
         .httpOnly(true)
         .secure(true)
         .path("/")
         .maxAge(tokenExpiration)
         .build();
-    return cookie;
   }
 
   @PostMapping(RouteDefinition.Auth.REGISTER_URL)
@@ -137,13 +127,15 @@ public class AuthController {
       return ResponseEntity.status(401).body(null);
     }
 
-    System.out.println(user);
     return ResponseEntity.ok(UserDTOMapper.responseDTO(user));
   }
 
   @PostMapping(RouteDefinition.Auth.REFRESH_TOKEN_URL)
   public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
     String refreshToken = null;
+    if (request.getCookies() == null) {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "No refresh token found"));
+    }
     for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
       if (JWTService.REFRESH_TOKEN_NAME.equals(cookie.getName())) {
         refreshToken = cookie.getValue();
