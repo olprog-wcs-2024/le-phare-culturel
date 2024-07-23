@@ -1,14 +1,28 @@
 package fr.olprog_c.le_phare_culturel.entities;
 
-import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.Collection;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.validator.constraints.Length;
-
-import java.util.Collection;
 
 @Entity
 @Table(name = "events_groups_users")
@@ -19,21 +33,31 @@ import java.util.Collection;
 // @DynamicUpdate
 public class EventGroupUserEntity extends BaseCommonEntity {
 
-  @Column(name = "group_name", nullable = false, unique = true, length = 50)
-  @ColumnDefault("\"Nouveau Groupe\"")
-  @Length(min = 5, max = 50)
-  private String groupName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @OneToOne
-  // @JsonProperty(value = "user_author_id")
-  private UserEntity referencedUserAuthorId;
+    @Column(name = "group_name", nullable = false, unique = true, length = 50)
+    private String groupName;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "related_events_id")
-  private EventEntity relatedEventsId;
+    @Column(name = "group_size", nullable = false, columnDefinition = "TINYINT UNSIGNED")
+    private Integer groupSize;
 
-  // Apply map / filter in DTO to Obtain Users List
-  @OneToMany(mappedBy = "relatedEventsGroupsId", orphanRemoval = true)
-  private Collection<EventGroupUserMessageEntity> referencedGroupsMessagesId;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant timeMeet;
+
+    @Column(name = "description", nullable = false, length = 255)
+    private String description;
+
+    @OneToOne
+    private UserEntity referencedUserAuthor;
+
+    @ManyToOne()
+    @JoinColumn(name = "related_events")
+    private EventEntity relatedEvents;
+
+    @OneToMany(mappedBy = "relatedEventsGroups", orphanRemoval = true)
+    @JsonBackReference
+    private Collection<EventGroupUserMessageEntity> referencedGroupsMessages;
 
 }

@@ -1,0 +1,19 @@
+meta {
+  name: get-api
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://api.openagenda.com/v2/agendas/89904399/events?key=dd5c193e8af34e65b7654f7ba60b3e4f&size=1000&timings[gte]=2024-07-22T00:00:00.000Z&monolingual=fr&detailed=1
+  body: none
+  auth: none
+}
+
+params:query {
+  key: dd5c193e8af34e65b7654f7ba60b3e4f
+  size: 1000
+  timings[gte]: 2024-07-22T00:00:00.000Z
+  monolingual: fr
+  detailed: 1
+}

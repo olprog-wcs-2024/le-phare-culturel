@@ -1,0 +1,22 @@
+meta {
+  name: Get Events
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{api_url}}/events
+  body: none
+  auth: none
+}
+
+headers {
+  cookie: access_token={{access_token}}
+}
+
+body:json {
+  {
+    "password": "Sam@1981",
+    "email": "samuel.michaux@ik.me"
+  }
+}

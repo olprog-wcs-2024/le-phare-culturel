@@ -1,56 +1,63 @@
 package fr.olprog_c.le_phare_culturel.entities;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import java.util.Collection;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDate;
-import java.util.Collection;
-
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "events")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@DynamicUpdate
 public class EventEntity extends BaseCommonEntity {
 
-  @Column(nullable = false, length = 50)
-  @ColumnDefault("\"Nouveau Titre\"")
-  private String titre;
+  @Id
+  private Long uid;
 
-  @Column(nullable = false, length = 1000)
-  @ColumnDefault("\"Nouvel Evenement\"")
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<ImageEntity> images;
+
+  private String dateRange;
+
+  private String imageCredits;
+
+  @Column(columnDefinition = "TEXT")
   private String description;
 
-  @CreationTimestamp
-  private LocalDate dateDebut;
+  @Column(columnDefinition = "TEXT")
+  private String longDescription;
 
-  @CreationTimestamp
-  private LocalDate dateFin;
+  private String title;
 
-  @Column(nullable = false)
-  private boolean isActive;
+  @Column(columnDefinition = "TEXT")
+  private String tarifs;
 
-  @OneToOne
-  @JoinColumn(name = "referenced_events_address_id")
-  private AddressEventEntity referencedAddressEventsID;
+  private String type;
 
-  @OneToMany(mappedBy = "relatedEventsId", fetch = FetchType.LAZY)
-  private Collection<EventMediaEntity> referencedEventsMediaID;
+  @Column(columnDefinition = "TEXT")
+  private String slug;
 
-  @OneToMany(mappedBy = "relatedEventsId", fetch = FetchType.LAZY)
-  private Collection<EventGroupUserEntity> referencedEventGroupsID;
+  @ManyToOne(cascade = CascadeType.ALL)
+  private LocationEntity location;
 
-  @ManyToMany()
-  @JoinTable(name = "fk_events_referer_keywords",
-          joinColumns = @JoinColumn(name = "events_id"),
-          inverseJoinColumns = @JoinColumn(name = "keywords_id") )
-  private Collection<EventKeywordEntity> referencedKeywordsList;
+  @ManyToOne(cascade = CascadeType.ALL)
+  private TTimingEntity lastTiming;
+
+  @ManyToOne(cascade = CascadeType.ALL)
+  private TTimingEntity firstTiming;
+
+  @OneToMany(mappedBy = "relatedEvents", fetch = FetchType.EAGER)
+  private Collection<EventGroupUserEntity> referencedEventGroups;
+
 }

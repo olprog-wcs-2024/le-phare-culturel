@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class LePhareCultureApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(LePhareCultureApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(LePhareCultureApplication.class, args);
+    }
 
 }

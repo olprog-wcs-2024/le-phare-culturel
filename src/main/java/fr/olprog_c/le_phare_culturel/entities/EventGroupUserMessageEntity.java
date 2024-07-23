@@ -1,14 +1,22 @@
 package fr.olprog_c.le_phare_culturel.entities;
 
-import jakarta.persistence.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "events_groups_messages")
@@ -20,22 +28,18 @@ import org.hibernate.validator.constraints.Length;
 @DynamicInsert
 public class EventGroupUserMessageEntity extends BaseCommonEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
   @Column(length = 1000, nullable = false)
-  @Length(min = 5, max = 1000)
-  @ColumnDefault("\"Body Nouveau Message\"")
   private String messageText;
 
-  @Column(length = 256, nullable = true)
-  @Length(min = 5, max = 256)
-  @ColumnDefault("\"Nouveau Message\"")
-  private String messageTitle;
+  @OneToOne
+  private UserEntity referencedUserAuthor;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  // @JsonProperty(value = "user_author_id")
-  private UserEntity referencedUserAuthorId;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "related_events_groups_id")
-  private EventGroupUserEntity relatedEventsGroupsId;
+  @ManyToOne()
+  @JoinColumn(name = "related_events_groups")
+  private EventGroupUserEntity relatedEventsGroups;
 
 }
