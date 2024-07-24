@@ -233,8 +233,8 @@ public class EventDTOMapper {
 
 	}
 
-	public static EventByUserComingSoonResponseDTO convertEventEntityToEventByUserComingSoonResponseDTO(EventEntity event) {
-		return new EventByUserComingSoonResponseDTO(
+	public static EventByUserComingSoonOrLastEventsResponseDTO convertEventEntityToEventByUserComingSoonResponseDTO(EventEntity event) {
+		return new EventByUserComingSoonOrLastEventsResponseDTO(
 				event.getUid(),
 				convertImagesDTO(event.getImages()),
 				event.getDescription(),

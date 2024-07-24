@@ -1,6 +1,7 @@
 package fr.olprog_c.le_phare_culturel.services;
 
-import fr.olprog_c.le_phare_culturel.dtos.event.EventByUserComingSoonResponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventByUserComingSoonOrLastEventsResponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventWrapFutureOrLastByUser;
 import fr.olprog_c.le_phare_culturel.dtos.mapper.EventDTOMapper;
 import fr.olprog_c.le_phare_culturel.dtos.mapper.UserDTOMapper;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserAvatarPutRequestDTO;
@@ -161,12 +162,18 @@ public class UserService {
 		return saved;
 	}
 
-	public List<EventByUserComingSoonResponseDTO> findAllEventsByUser(UserEntity user) {
+	public EventWrapFutureOrLastByUser findAllEventsByUser(UserEntity user) {
 		List<EventEntity> events = userRepository.findAllEventsByUser(user, Sort.by(Sort.Order.asc("firstTiming.end")));
-		return events.stream()
+		List<EventByUserComingSoonOrLastEventsResponseDTO> comingSoon = events.stream()
 				.filter(event -> event.getFirstTiming().getEnd().isAfter(OffsetDateTime.now()))
 				.filter(event -> event.getDeletedDate() == null)
 				.map(EventDTOMapper::convertEventEntityToEventByUserComingSoonResponseDTO)
 				.toList();
+		List<EventByUserComingSoonOrLastEventsResponseDTO> lastEvent = events.stream()
+				.filter(event -> event.getFirstTiming().getEnd().isBefore(OffsetDateTime.now()))
+				.filter(event -> event.getDeletedDate() == null)
+				.map(EventDTOMapper::convertEventEntityToEventByUserComingSoonResponseDTO)
+				.toList();
+		return new EventWrapFutureOrLastByUser(comingSoon, lastEvent);
 	}
 }

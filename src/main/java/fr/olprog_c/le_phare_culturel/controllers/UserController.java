@@ -1,7 +1,7 @@
 package fr.olprog_c.le_phare_culturel.controllers;
 
 import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventByUserComingSoonResponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventWrapFutureOrLastByUser;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserAvatarPutRequestDTO;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserNewPasswordPutRequestDTO;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserRequestDTO;
@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
-
-import java.util.List;
 
 
 @RestController
@@ -119,9 +117,9 @@ public class UserController {
 	}
 
 	@GetMapping("/users/groups")
-	public ResponseEntity<List<EventByUserComingSoonResponseDTO>> getGroups(@AuthenticationPrincipal UserEntity user) {
-		List<EventByUserComingSoonResponseDTO> events = this.userService.findAllEventsByUser(user);
-		if (events.isEmpty()) {
+	public ResponseEntity<EventWrapFutureOrLastByUser> getGroups(@AuthenticationPrincipal UserEntity user) {
+		EventWrapFutureOrLastByUser events = this.userService.findAllEventsByUser(user);
+		if (events.future().isEmpty() && events.last().isEmpty()) {
 			throw new HttpServerErrorException(HttpStatus.NOT_FOUND, "No events found for user");
 		}
 		return ResponseEntity.ok(events);
