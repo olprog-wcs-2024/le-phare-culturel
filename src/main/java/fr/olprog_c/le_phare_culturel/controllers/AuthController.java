@@ -45,6 +45,9 @@ public class AuthController {
     @Value("#{${jwt.refreshTokenExpirationMinutes:1440} * 60}")
     private Long refreshTokenExpirationMinute;
 
+    @Value("${cookie.secure:true}")
+    private boolean cookieSecure;
+
     private final AuthService authService;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -76,18 +79,6 @@ public class AuthController {
                 response.addHeader("Set-Cookie", accessTokenCookie.toString());
                 response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
-                // Ajouter le token CSRF
-                // CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-                // ResponseCookie csrfCookie = ResponseCookie.from("XSRF-TOKEN",
-                // csrfToken.getToken())
-                // .httpOnly(false)
-                // .secure(true)
-                // .path("/")
-                // .maxAge(30 * 60)
-                // .build();
-
-                // response.addHeader("Set-Cookie", csrfCookie.toString());
-
                 return ResponseEntity.ok(AuthDTOMapper.responseDTO(user));
             }
 
@@ -106,7 +97,7 @@ public class AuthController {
         return ResponseCookie
                 .from(tokenName, tokens.get(tokenName))
                 .httpOnly(true)
-                .secure(true)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(tokenExpiration)
                 .build();

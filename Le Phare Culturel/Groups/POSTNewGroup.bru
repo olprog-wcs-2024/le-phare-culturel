@@ -5,9 +5,13 @@ meta {
 }
 
 post {
-  url: {{api_url}}/events/20829667/groups
+  url: {{api_url}}/events/158668/groups
   body: json
   auth: none
+}
+
+headers {
+  cookie: access_token={{access_token}};reresh_token={{refresh_token}}
 }
 
 body:json {

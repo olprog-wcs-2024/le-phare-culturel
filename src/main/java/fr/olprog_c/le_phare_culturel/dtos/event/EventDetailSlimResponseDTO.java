@@ -1,8 +1,10 @@
 package fr.olprog_c.le_phare_culturel.dtos.event;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record EventDetailReponseWithoutGroupDTO(
+public record EventDetailSlimResponseDTO(
         Long uid,
         EventImagesDTO images,
         String description,
@@ -13,5 +15,6 @@ public record EventDetailReponseWithoutGroupDTO(
         String dateRange,
         @JsonProperty("image_credits") String imageCredits,
         @JsonProperty("first_timing") EventDateDetailsDTO firstTiming,
-        @JsonProperty("last_timing") EventDateDetailsDTO lastTimingDto) {
+        @JsonProperty("last_timing") EventDateDetailsDTO lastTiming,
+        List<EventGroupSlimDTO> groups) {
 }

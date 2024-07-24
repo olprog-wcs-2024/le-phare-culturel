@@ -5,12 +5,10 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailReponseWithoutGroupDTO;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailSlimReponseDTO;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventResponseWithoutGroupDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailResponseWithoutGroupDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailSlimResponseDTO;
 import fr.olprog_c.le_phare_culturel.dtos.mapper.EventDTOMapper;
 import fr.olprog_c.le_phare_culturel.entities.EventEntity;
 import fr.olprog_c.le_phare_culturel.repositories.EventRepository;
@@ -31,7 +29,7 @@ public class EventService {
         return eventRepository.findAllByOrderByLastTiming_endAsc(PageRequest.of(pageNumber, pageSize));
     }
 
-    public Optional<EventDetailSlimReponseDTO> findByID(long id) {
+    public Optional<EventDetailSlimResponseDTO> findByID(long id) {
         Optional<EventEntity> retrievedEvent = eventRepository.findById(Math.max(0, id));
         if (retrievedEvent.isPresent()) {
             return retrievedEvent.map(EventDTOMapper::convertDetailSlimResponseDTO);
@@ -39,8 +37,8 @@ public class EventService {
         return Optional.empty();
     }
 
-    public EventDetailReponseWithoutGroupDTO random() {
-        return eventRepository.findRandomEvent().map(EventDTOMapper::convertDetailReponseWithoutGroupDTO).orElse(null);
+    public EventDetailResponseWithoutGroupDTO random() {
+        return eventRepository.findRandomEvent().map(EventDTOMapper::convertDetailResponseWithoutGroupDTO).orElse(null);
     }
 
     // public List<EventEntityResponseDTO> findAllInLimitDTO(int pageNumber, int

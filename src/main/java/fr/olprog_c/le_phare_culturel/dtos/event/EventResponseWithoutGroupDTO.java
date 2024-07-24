@@ -8,5 +8,5 @@ public record EventResponseWithoutGroupDTO(
     @JsonProperty("total_pages") Integer totalPages,
     @JsonProperty("total_elements") Long totalElements,
     Integer size,
-    List<EventDetailReponseWithoutGroupDTO> events) {
+    List<EventDetailResponseWithoutGroupDTO> events) {
 }

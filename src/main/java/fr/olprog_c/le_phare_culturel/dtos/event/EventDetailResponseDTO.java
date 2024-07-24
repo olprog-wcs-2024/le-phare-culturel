@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.olprog_c.le_phare_culturel.models.event.EventGroupModelDTO;
 
-public record EventDetailReponseDTO(
+public record EventDetailResponseDTO(
     Long uid,
     EventImagesDTO images,
     String description,
