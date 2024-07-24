@@ -15,4 +15,5 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
 
     // filtrer les événements par lasttiming l'attribut end
     Page<EventEntity> findAllByOrderByLastTiming_endAsc(Pageable pageable);
+
 }
