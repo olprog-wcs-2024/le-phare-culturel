@@ -1,15 +1,23 @@
 package fr.olprog_c.le_phare_culturel.services;
 
-import fr.olprog_c.le_phare_culturel.dtos.user.UserNewPasswordPutRequestDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventByUserComingSoonOrLastEventsResponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventWrapFutureOrLastByUser;
+import fr.olprog_c.le_phare_culturel.dtos.mapper.EventDTOMapper;
 import fr.olprog_c.le_phare_culturel.dtos.mapper.UserDTOMapper;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserAvatarPutRequestDTO;
+import fr.olprog_c.le_phare_culturel.dtos.user.UserNewPasswordPutRequestDTO;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserRequestDTO;
 import fr.olprog_c.le_phare_culturel.dtos.user.UserResponseDTO;
+import fr.olprog_c.le_phare_culturel.entities.EventEntity;
 import fr.olprog_c.le_phare_culturel.entities.UserEntity;
+import fr.olprog_c.le_phare_culturel.repositories.EventGroupProjection;
 import fr.olprog_c.le_phare_culturel.repositories.UserRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,7 +33,7 @@ public class UserService {
      * @param userRepository The UserRepository to be used by this service
      */
     public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+        UserService.userRepository = userRepository;
     }
 
     /**
@@ -47,16 +55,16 @@ public class UserService {
      * Updates a UserEntity based on a UserPostRequestDTO
      *
      * @param requestDTO The request DTO containing the new user data
-     * @param user The entity to be updated
+     * @param user       The entity to be updated
      * @return This service, for chaining
-     * @throws BadCredentialsException If the old and new password are identical or the replacement password is different
+     * @throws BadCredentialsException If the old and new password are identical or
+     *                                 the replacement password is different
      */
     public UserService convertRequestDtoToEntity(UserRequestDTO requestDTO, UserEntity user) {
 
         // case of changing password
         if ((requestDTO.newPassword() != null && !requestDTO.newPassword().isEmpty())
-                && (requestDTO.password() != null && !requestDTO.password().isEmpty())
-        ) {
+                && (requestDTO.password() != null && !requestDTO.password().isEmpty())) {
             if (Objects.equals(AuthService.passwordEncoding(requestDTO.newPassword()), user.getPassword())) {
                 throw new BadCredentialsException("l ancien et le nouveau Mot de passe sont identiques");
             }
@@ -95,7 +103,7 @@ public class UserService {
     /**
      * Convert UserAvatarPutRequestDTO to UserEntity
      *
-     * @param dto The UserAvatarPutRequestDTO containing updated avatar URL
+     * @param dto  The UserAvatarPutRequestDTO containing updated avatar URL
      * @param user The UserEntity to be updated
      * @return This UserService instance for chaining
      */
@@ -105,7 +113,7 @@ public class UserService {
             user.setAvatar(dto.url());
         }
 
-        this.userEntity = user;
+        userEntity = user;
         return this;
     }
 
@@ -113,15 +121,16 @@ public class UserService {
      * Update the UserEntity based on UserNewPasswordPutRequestDTO
      *
      * @param requestDTO The request DTO containing the new password data
-     * @param user The UserEntity to be updated
+     * @param user       The UserEntity to be updated
      * @return This UserService instance for chaining
-     * @throws BadCredentialsException If the old and new password are identical, or if the confirmation password doesn't match the new password
+     * @throws BadCredentialsException If the old and new password are identical, or
+     *                                 if the confirmation password doesn't match
+     *                                 the new password
      */
     public UserService convertRequestNewPasswordDtoToEntity(UserNewPasswordPutRequestDTO requestDTO, UserEntity user) {
 
         if ((requestDTO.newPassword() != null && !requestDTO.newPassword().isEmpty())
-                && (requestDTO.password() != null && !requestDTO.password().isEmpty())
-        ) {
+                && (requestDTO.password() != null && !requestDTO.password().isEmpty())) {
             if (Objects.equals(AuthService.passwordEncoding(requestDTO.newPassword()), user.getPassword())) {
                 throw new BadCredentialsException("l ancien et le nouveau Mot de passe sont identiques");
             }
@@ -133,7 +142,7 @@ public class UserService {
             // user.setUpdatedDate(LocalDateTime.now());
         }
 
-        this.userEntity = user;
+        userEntity = user;
         return this;
     }
 
@@ -146,7 +155,7 @@ public class UserService {
         Optional<UserEntity> existingUserEntity = userRepository.findById(userEntity.getId());
         boolean saved = false;
         if (existingUserEntity.isPresent()) {
-            UserEntity savedEntity = userRepository.save(this.userEntity);
+            UserEntity savedEntity = userRepository.save(userEntity);
             if (existingUserEntity.get().equals(savedEntity)) {
                 saved = true;
             }
@@ -154,4 +163,19 @@ public class UserService {
         return saved;
     }
 
+    public EventWrapFutureOrLastByUser findAllEventsByUser(UserEntity user) {
+        List<EventGroupProjection> projections = userRepository.findAllEventsByUser(user,
+                Sort.by(Sort.Order.asc("firstTiming.end")));
+        List<EventByUserComingSoonOrLastEventsResponseDTO> comingSoon = projections.stream()
+                .filter(event -> event.getEvent().getFirstTiming().getEnd().isAfter(OffsetDateTime.now()))
+                .filter(event -> event.getEvent().getDeletedDate() == null)
+                .map(EventDTOMapper::convertEventEntityToEventByUserComingSoonResponseDTO)
+                .toList();
+        List<EventByUserComingSoonOrLastEventsResponseDTO> lastEvent = projections.stream()
+                .filter(event -> event.getEvent().getFirstTiming().getEnd().isBefore(OffsetDateTime.now()))
+                .filter(event -> event.getEvent().getDeletedDate() == null)
+                .map(EventDTOMapper::convertEventEntityToEventByUserComingSoonResponseDTO)
+                .toList();
+        return new EventWrapFutureOrLastByUser(comingSoon, lastEvent);
+    }
 }

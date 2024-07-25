@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 
 import fr.olprog_c.le_phare_culturel.controllers.routes.RouteDefinition;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailSlimReponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailResponseWithoutGroupDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailSlimResponseDTO;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventResponseWithoutGroupDTO;
 import fr.olprog_c.le_phare_culturel.dtos.mapper.EventDTOMapper;
 import fr.olprog_c.le_phare_culturel.entities.EventEntity;
@@ -26,7 +27,7 @@ public class EventController {
     }
 
     @GetMapping(value = RouteDefinition.Events.EVENTS_WITH_ID_URL)
-    public ResponseEntity<EventDetailSlimReponseDTO> getEventsByID(@PathVariable long eventid) {
+    public ResponseEntity<EventDetailSlimResponseDTO> getEventsByID(@PathVariable long eventid) {
         return eventService.findByID(eventid)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.NOT_FOUND, "Event not found"));
@@ -43,6 +44,11 @@ public class EventController {
 
         return ResponseEntity.ok(EventDTOMapper.convertPageToResponseWithoutGroupDTO(events));
 
+    }
+
+    @GetMapping("/events/random")
+    public ResponseEntity<EventDetailResponseWithoutGroupDTO> getRandomEvent() {
+        return ResponseEntity.ok(eventService.random());
     }
 
 }

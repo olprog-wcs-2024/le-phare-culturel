@@ -18,7 +18,7 @@ public class EventInfoResponseDTO {
     private List<EventKeywordDescriptor> keywordsFr;
     private List<EventCategoryDescriptor> categories;
 
-    private List<EventParticipantsGroupDTO> eventParticipantsGroupDTOS;
+    private List<EventGroupParticipantsResponseDTO> EventGroupParticipantsResponseDTOS;
 
     @JsonProperty("registration")
     public String getRegistration() {
@@ -121,17 +121,17 @@ public class EventInfoResponseDTO {
     }
 
     @JsonProperty("participants_groups")
-    public List<EventParticipantsGroupDTO> getParticipantsGroups() {
-        return eventParticipantsGroupDTOS;
+    public List<EventGroupParticipantsResponseDTO> getParticipantsGroups() {
+        return EventGroupParticipantsResponseDTOS;
     }
 
     @JsonProperty("participants_groups")
-    public void setParticipantsGroups(List<EventParticipantsGroupDTO> value) {
-        this.eventParticipantsGroupDTOS = value;
+    public void setParticipantsGroups(List<EventGroupParticipantsResponseDTO> value) {
+        this.EventGroupParticipantsResponseDTOS = value;
     }
     @JsonProperty("participants_groups_count")
     public int getParticipantsGroupsCount() {
-        return ((this.eventParticipantsGroupDTOS != null) ? this.eventParticipantsGroupDTOS.size(): 0);
+        return ((this.EventGroupParticipantsResponseDTOS != null) ? this.EventGroupParticipantsResponseDTOS.size(): 0);
     }
 }
 

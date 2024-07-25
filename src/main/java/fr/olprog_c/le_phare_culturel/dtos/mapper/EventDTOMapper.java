@@ -7,13 +7,13 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 
+import fr.olprog_c.le_phare_culturel.dtos.event.EventByUserComingSoonOrLastEventsResponseDTO;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventDateDetailsDTO;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailReponseDTO;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailReponseGroupsCountDTO;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailReponseWithoutGroupDTO;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailSlimReponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailResponseDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailResponseGroupsCountDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailResponseWithoutGroupDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventDetailSlimResponseDTO;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventGroupCountDTO;
-import fr.olprog_c.le_phare_culturel.dtos.event.EventGroupDTO;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventGroupSlimDTO;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventGroupUserMessageMapper;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventImagesDTO;
@@ -23,11 +23,15 @@ import fr.olprog_c.le_phare_culturel.dtos.event.EventMessageDTO;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventMessageSlimDTO;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventResponseDTO;
 import fr.olprog_c.le_phare_culturel.dtos.event.EventResponseWithoutGroupDTO;
+import fr.olprog_c.le_phare_culturel.dtos.event.EventsSlimIDDto;
+import fr.olprog_c.le_phare_culturel.dtos.user.UserSlimResponseDTO;
 import fr.olprog_c.le_phare_culturel.entities.EventEntity;
 import fr.olprog_c.le_phare_culturel.entities.EventGroupUserEntity;
 import fr.olprog_c.le_phare_culturel.entities.ImageEntity;
 import fr.olprog_c.le_phare_culturel.entities.LocationEntity;
 import fr.olprog_c.le_phare_culturel.entities.TTimingEntity;
+import fr.olprog_c.le_phare_culturel.models.event.EventGroupModelDTO;
+import fr.olprog_c.le_phare_culturel.repositories.EventGroupProjection;
 
 public class EventDTOMapper {
 
@@ -69,12 +73,12 @@ public class EventDTOMapper {
                 event.getTotalElements(),
                 event.getSize(),
                 events.stream()
-                        .map(EventDTOMapper::convertDetailReponseWithoutGroupDTO)
+                        .map(EventDTOMapper::convertDetailResponseWithoutGroupDTO)
                         .toList());
     }
 
-    public static EventDetailReponseDTO convertDetailResponseDTO(EventEntity event) {
-        return new EventDetailReponseDTO(
+    public static EventDetailResponseDTO convertDetailResponseDTO(EventEntity event) {
+        return new EventDetailResponseDTO(
                 event.getUid(),
                 convertImagesDTO(event.getImages()),
                 event.getDescription(),
@@ -93,8 +97,8 @@ public class EventDTOMapper {
         );
     }
 
-    public static EventDetailSlimReponseDTO convertDetailSlimResponseDTO(EventEntity event) {
-        return new EventDetailSlimReponseDTO(
+    public static EventDetailSlimResponseDTO convertDetailSlimResponseDTO(EventEntity event) {
+        return new EventDetailSlimResponseDTO(
                 event.getUid(),
                 convertImagesDTO(event.getImages()),
                 event.getDescription(),
@@ -113,8 +117,8 @@ public class EventDTOMapper {
         );
     }
 
-    public static EventDetailReponseGroupsCountDTO convertDetailReponseWithCountGroupDTO(EventEntity event) {
-        return new EventDetailReponseGroupsCountDTO(
+    public static EventDetailResponseGroupsCountDTO convertDetailResponseWithCountGroupDTO(EventEntity event) {
+        return new EventDetailResponseGroupsCountDTO(
                 event.getUid(),
                 convertImagesDTO(event.getImages()),
                 event.getDescription(),
@@ -133,8 +137,8 @@ public class EventDTOMapper {
         );
     }
 
-    public static EventDetailReponseWithoutGroupDTO convertDetailReponseWithoutGroupDTO(EventEntity event) {
-        return new EventDetailReponseWithoutGroupDTO(
+    public static EventDetailResponseWithoutGroupDTO convertDetailResponseWithoutGroupDTO(EventEntity event) {
+        return new EventDetailResponseWithoutGroupDTO(
                 event.getUid(),
                 convertImagesDTO(event.getImages()),
                 event.getDescription(),
@@ -194,16 +198,38 @@ public class EventDTOMapper {
                 timing.getEnd());
     }
 
-    public static EventGroupDTO convertGroupDTO(EventGroupUserEntity event) {
+    public static EventGroupModelDTO convertGroupDTO(EventGroupUserEntity event) {
         List<EventMessageDTO> messages = event.getReferencedGroupsMessages()
                 .stream()
                 .map(EventGroupUserMessageMapper::toDTO)
                 .toList();
+        List<UserSlimResponseDTO> participantList = event.getReferencedUserList()
+                .stream()
+                .map(UserDTOMapper::responseSlimDTO)
+                .toList();
 
-        return new EventGroupDTO(
+        /*
+         * Long id,
+         * 
+         * @JsonProperty("group_name") String groupName,
+         * 
+         * @JsonProperty("time_meet") Instant timeMeet,
+         * 
+         * @JsonProperty("group_size") int groupMaxSize,
+         * String description,
+         * UserResponseDTO author,
+         * List<UserSlimResponseDTO> participants,
+         * List<EventMessageDTO> messages
+         */
+        return new EventGroupModelDTO(
                 event.getId(),
+                event.getRelatedEvents(),
                 event.getGroupName(),
+                event.getTimeMeet(),
+                event.getGroupMaxSize(),
+                event.getDescription(),
                 UserDTOMapper.responseDTO(event.getReferencedUserAuthor()),
+                participantList,
                 messages);
 
     }
@@ -218,6 +244,7 @@ public class EventDTOMapper {
                 event.getId(),
                 event.getGroupName(),
                 event.getTimeMeet(),
+                event.getGroupMaxSize(),
                 event.getDescription(),
                 UserDTOMapper.responseSlimDTO(event.getReferencedUserAuthor()),
                 messages);
@@ -231,4 +258,20 @@ public class EventDTOMapper {
 
     }
 
+    public static EventByUserComingSoonOrLastEventsResponseDTO convertEventEntityToEventByUserComingSoonResponseDTO(
+            EventGroupProjection event) {
+        return new EventByUserComingSoonOrLastEventsResponseDTO(
+                event.getEvent().getUid(),
+                convertImagesDTO(event.getEvent().getImages()),
+                event.getEvent().getDescription(),
+                event.getEvent().getDateRange(),
+                event.getEvent().getTitle(),
+                event.getGroupId());
+    }
+
+    public EventEntity convertFromEventIDDtoEventEntitySlim(EventsSlimIDDto slimIDDto) {
+        EventEntity entity = new EventEntity();
+        entity.setUid(slimIDDto.uid());
+        return entity;
+    }
 }

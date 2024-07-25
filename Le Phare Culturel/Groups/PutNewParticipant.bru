@@ -1,0 +1,25 @@
+meta {
+  name: PutNewParticipant
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{api_url}}/events/20829667/groups/12345/users
+  body: json
+  auth: none
+}
+
+headers {
+  cookie: access_token={{access_token}}
+}
+
+body:json {
+  {
+    "group_name": "mon suoper grpeir",
+    "time_meet": "2024-07-31 12:10:00",
+    "description":"Viensez les gens",
+    "group_size": 16
+    
+  }
+}

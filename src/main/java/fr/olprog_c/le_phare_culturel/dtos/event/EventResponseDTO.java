@@ -11,5 +11,5 @@ public record EventResponseDTO(
 
     Integer size,
 
-    List<EventDetailReponseDTO> events) {
+    List<EventDetailResponseDTO> events) {
 }

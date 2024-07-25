@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record EventDetailSlimReponseDTO(
+public record EventDetailResponseGroupsCountDTO(
         Long uid,
         EventImagesDTO images,
         String description,
@@ -16,5 +16,5 @@ public record EventDetailSlimReponseDTO(
         @JsonProperty("image_credits") String imageCredits,
         @JsonProperty("first_timing") EventDateDetailsDTO firstTiming,
         @JsonProperty("last_timing") EventDateDetailsDTO lastTiming,
-        List<EventGroupSlimDTO> groups) {
+        List<EventGroupCountDTO> groups) {
 }

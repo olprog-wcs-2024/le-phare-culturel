@@ -35,19 +35,19 @@ public class GroupDataInitializer implements CommandLineRunner {
             EventGroupUserEntity group1 = new EventGroupUserEntity();
             group1.setGroupName("The Hitmen");
             group1.setDescription("A group of professional hitmen");
-            group1.setGroupSize(5);
+            group1.setGroupMaxSize(5);
             group1.setReferencedUserAuthor(user1);
             group1.setRelatedEvents(event1);
-            group1.setTimeMeet(Instant.now().plusSeconds(3600));
+            group1.setTimeMeet(Instant.now().plusSeconds(3600).toString());
             groupRepository.save(group1);
 
             EventGroupUserEntity group2 = new EventGroupUserEntity();
             group2.setGroupName("Test Group");
             group2.setDescription("A group of professional hitmen");
-            group2.setGroupSize(10);
+            group2.setGroupMaxSize(10);
             group2.setReferencedUserAuthor(user2);
             group2.setRelatedEvents(event2);
-            group2.setTimeMeet(Instant.now().plusSeconds(3600));
+            group2.setTimeMeet(Instant.now().plusSeconds(3600).toString());
             groupRepository.save(group2);
         } catch (Exception e) {
             // TODO: handle exception

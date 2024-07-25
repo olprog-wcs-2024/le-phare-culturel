@@ -1,0 +1,24 @@
+meta {
+  name: POSTNewGroup
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api_url}}/events/158668/groups
+  body: json
+  auth: none
+}
+
+headers {
+  cookie: access_token={{access_token}};reresh_token={{refresh_token}}
+}
+
+body:json {
+  {
+    "group_name": "sam à la plage",
+    "time_meet": "dehzkbfcjhk",
+    "description": "tous à la plage",
+    "group_size": 12
+  }
+}
