@@ -47,7 +47,7 @@ public class AuthController {
 
     @Value("${cookie.secure:true}")
     private boolean cookieSecure;
-
+  
     private final AuthService authService;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
