@@ -5,7 +5,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,18 +27,18 @@ import lombok.NoArgsConstructor;
 @DynamicInsert
 public class EventGroupUserMessageEntity extends BaseCommonEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(length = 1000, nullable = false)
-  private String messageText;
+    @Column(length = 1000, nullable = false)
+    private String messageText;
 
-  @OneToOne
-  private UserEntity referencedUserAuthor;
+    @OneToOne
+    private UserEntity referencedUserAuthor;
 
-  @ManyToOne()
-  @JoinColumn(name = "related_events_groups")
-  private EventGroupUserEntity relatedEventsGroups;
+    @ManyToOne()
+    @JoinColumn(name = "related_events_groups")
+    private EventGroupUserEntity relatedEventsGroups;
 
 }

@@ -13,9 +13,12 @@ import fr.olprog_c.le_phare_culturel.models.event.EventGroupModelDTO;
 
 public class GroupDTOMapper {
 
-    public static EventGroupParticipantsResponseDTO convertGroupEntityToEventGroupParticipantsResponseDTO(EventGroupUserEntity eventGroupUser) {
+    public static EventGroupParticipantsResponseDTO convertGroupEntityToEventGroupParticipantsResponseDTO(
+            EventGroupUserEntity eventGroupUser) {
 
-        UserSlimResponseDTO author = ((eventGroupUser.getReferencedUserAuthor() != null) ? UserDTOMapper.responseSlimDTO(eventGroupUser.getReferencedUserAuthor()) : null);
+        UserSlimResponseDTO author = ((eventGroupUser.getReferencedUserAuthor() != null)
+                ? UserDTOMapper.responseSlimDTO(eventGroupUser.getReferencedUserAuthor())
+                : null);
 
         Collection<EventGroupUserMessageEntity> messagesEntitiesList = eventGroupUser.getReferencedGroupsMessages();
         if (messagesEntitiesList != null) {
@@ -35,6 +38,7 @@ public class GroupDTOMapper {
                     eventGroupUser.getGroupMaxSize(),
                     eventGroupUser.getDescription(),
                     author,
+                    eventGroupUser.getRelatedEvents().getTitle(),
                     participantsListDto,
                     messages);
         }
@@ -46,25 +50,33 @@ public class GroupDTOMapper {
                 eventGroupUser.getGroupMaxSize(),
                 eventGroupUser.getDescription(),
                 author,
+                eventGroupUser.getRelatedEvents().getTitle(),
                 null,
                 null);
 
     }
-    /* ******
-    public static EventGroupUserEntity convertGroupRequestDTOToEventGroupUserEntity(EventGroupModelDTO eventGroupModelDTO) {
-        List<UserEntity> participantsList = eventGroupModelDTO.participants().stream().map(UserDTOMapper::convert).toList();
-        List<EventGroupUserMessageEntity> messagesList = eventGroupModelDTO.messages().stream().map(EventGroupUserMessageMapper::fromDTO).toList();
-        return new EventGroupUserEntity(
-                eventGroupModelDTO.id(),
-                eventGroupModelDTO.groupName(),
-                eventGroupModelDTO.groupMaxSize(),
-                eventGroupModelDTO.timeMeet(),
-                eventGroupModelDTO.description(),
-                UserDTOMapper::convertUserResponseDtoUserEntity(eventGroupModelDTO.author()),
-                participantsList,
-                messagesList);
-
-    } ****** */
-
+    /*
+     * ******
+     * public static EventGroupUserEntity
+     * convertGroupRequestDTOToEventGroupUserEntity(EventGroupModelDTO
+     * eventGroupModelDTO) {
+     * List<UserEntity> participantsList =
+     * eventGroupModelDTO.participants().stream().map(UserDTOMapper::convert).toList
+     * ();
+     * List<EventGroupUserMessageEntity> messagesList =
+     * eventGroupModelDTO.messages().stream().map(EventGroupUserMessageMapper::
+     * fromDTO).toList();
+     * return new EventGroupUserEntity(
+     * eventGroupModelDTO.id(),
+     * eventGroupModelDTO.groupName(),
+     * eventGroupModelDTO.groupMaxSize(),
+     * eventGroupModelDTO.timeMeet(),
+     * eventGroupModelDTO.description(),
+     * UserDTOMapper::convertUserResponseDtoUserEntity(eventGroupModelDTO.author()),
+     * participantsList,
+     * messagesList);
+     * 
+     * } ******
+     */
 
 }
